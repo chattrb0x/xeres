@@ -26,7 +26,6 @@ class Archetype {
     const componentsForEntity = {}
     componentTypes.forEach(type => {
       const instances = this.componentsByType.get(type)
-      console.log(instances.map(i => i.constructor.name))
       componentsForEntity[type] = instances[index]
     })
     return componentsForEntity

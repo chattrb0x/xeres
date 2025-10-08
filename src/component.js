@@ -14,10 +14,18 @@ class Position extends Component {
   }
 }
 class Velocity extends Component {
-  constructor(x=0, y=0) {
+  constructor(dx=0, dy=0) {
     super()
-    this.x = x
-    this.y = y
+    this.dx = dx
+    this.dy = dy
+    this.maxSpeed = 3
+  }
+}
+class Rotation extends Component {
+  constructor() {
+    super()
+    this.angle = 45
+    this.rotationSpeed = 0.1
   }
 }
 class Hitbox extends Component {
@@ -29,6 +37,7 @@ class Hitbox extends Component {
 }
 
 export {
+  Rotation,
   TakesInput,
   Position,
   Health,
