@@ -7,21 +7,21 @@ class Health extends Component {
 }
 class TakesInput extends Component {}
 class Position extends Component {
-  constructor(x, y) {
+  constructor(x=0, y=0) {
     super()
     this.x = x
     this.y = y
   }
 }
 class Velocity extends Component {
-  constructor(x, y) {
+  constructor(x=0, y=0) {
     super()
     this.x = x
     this.y = y
   }
 }
 class Hitbox extends Component {
-  constructor(w, h) {
+  constructor(w=10, h=10) {
     super()
     this.w = w
     this.h = h

@@ -3,7 +3,7 @@ class Archetype {
     this.componentsByType = new Map()
     this.entityIds = []
     Archetype.sortComponents(components).forEach(cType => {
-      this.componentsByType.set(cType.constructor, [])
+      this.componentsByType.set(cType, [])
     })
   }
   static sortComponents(components) {
@@ -22,10 +22,12 @@ class Archetype {
   }
   entityComponents(entity, componentTypes) {
     const index = this.entityIds.indexOf(entity.id)
+
     const componentsForEntity = {}
     componentTypes.forEach(type => {
-      componentsForEntity[type] = this.componentsByType.get(type.constructor)[index]
-      console.log(type)
+      const instances = this.componentsByType.get(type)
+      console.log(instances.map(i => i.constructor.name))
+      componentsForEntity[type] = instances[index]
     })
     return componentsForEntity
   }

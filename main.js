@@ -6,7 +6,6 @@ import { MovementSystem } from './src/systems/movement.js'
 // Setup main canvas
 const canvas = document.querySelector('canvas')
 const ctx = canvas.getContext('2d')
-ctx.fillRect(100,100,103,103)
 
 console.log('----------\n start \n ----------')
 
@@ -46,12 +45,15 @@ function setup() {
   level = new Level()
   
   // Create Player
-  level.createEntity({ components: PLAYER_ABILITIES })
+  const player = level.createEntity({ components: PLAYER_ABILITIES })
   
   console.log('---')
-  console.log(level.entityRecords)
-  console.log(level.archetypes)
-  console.log(level.archetypes.values())
+  
+  const entityRecords = Query.findEntitiesIn(level, PLAYER_ABILITIES)
+  if (!entityRecords?.length) return
+  const v = entityRecords[0].components[Velocity]
+  v.x = Math.random()
+  v.y = Math.random()
 }
 
 function onUpdate(level) {
@@ -59,24 +61,36 @@ function onUpdate(level) {
   MovementSystem.update(level)
 }
 
+function drawTriangle(ctx, x, y) {
+  ctx.beginPath()
+  ctx.moveTo(x, y)
+  ctx.lineTo(x - 5, y + 11)
+  ctx.lineTo(x + 5, y + 11)
+  ctx.closePath()
+  ctx.fill()  
+}
+
 function onRender() {
   // Query player position for rendering
-  const entityRecords = Query.findEntitiesIn(level, [TakesInput])
+  const entityRecords = Query.findEntitiesIn(level, PLAYER_ABILITIES)
   if (!entityRecords?.length) return
   
   const { components } = entityRecords[0]
   const pos = components[Position]
-  console.log(entityRecords[0])
   // console.log(`Player position: (${pos.x.toFixed(1)}, ${pos.y.toFixed(1)})`)
+  
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+  
+  drawTriangle(ctx, pos.x, pos.y)
 }
 
 function loop(currentTime) {
-  let frameTime = currentTime - lastTime
+ let frameTime = currentTime - lastTime
   lastTime = currentTime
- if(frameTime > 100) frameTime = 100
+  if(frameTime > 100) frameTime = 100
  
- accumulator += frameTime
- while(accumulator >= FIXED_UPDATE_STEP_MS) {
+  accumulator += frameTime
+  while(accumulator >= FIXED_UPDATE_STEP_MS) {
     onUpdate(level)
     accumulator -= FIXED_UPDATE_STEP_MS
   }
@@ -87,3 +101,4 @@ function loop(currentTime) {
 
 setup()
 loop(performance.now())
+  

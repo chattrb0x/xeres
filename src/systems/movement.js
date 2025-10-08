@@ -3,7 +3,7 @@ import { Query } from '../query.js'
 
 class MovementSystem {
   static update(level) {
-    Query.findEntitiesIn(level, [Position, Velocity]).forEach(({ components }) => {
+    Query.findEntitiesIn(level, [Position, Velocity])?.forEach(({ components }) => {
       const pos = components[Position]
       const vel = components[Velocity]
       
