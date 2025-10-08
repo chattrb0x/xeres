@@ -25,7 +25,7 @@ class Rotation extends Component {
   constructor() {
     super()
     this.angle = 45
-    this.rotationSpeed = 0.1
+    this.rotationSpeed = 0.7
   }
 }
 class Hitbox extends Component {

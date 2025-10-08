@@ -75,8 +75,8 @@ function onUpdate(level, dt) {
   if(pos.x < 0) bouncex = false
   if(pos.y < 0) bouncey = false
   
-  v.dx = Math.random() * bouncex ? -1 * 70 * dt : 70 * dt
-  v.dy = Math.random() * bouncey ? -1 * 70 * dt : 70 * dt
+  v.dx = Math.random() * bouncex ? -1 * 70 : 70
+  v.dy = Math.random() * bouncey ? -1 * 70 : 70
   // - Hack - END
   
   RotationSystem.update(level, dt)

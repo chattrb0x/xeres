@@ -8,8 +8,8 @@ class MovementSystem {
       const vel = components[Velocity]
       
       // Update position based on velocity
-      pos.x += vel.dx
-      pos.y += vel.dy
+      pos.x += vel.dx * dt
+      pos.y += vel.dy * dt
     })    
   }
 }

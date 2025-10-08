@@ -5,7 +5,7 @@ class RotationSystem {
   static update(level, dt) {
     Query.findEntitiesIn(level, [Rotation])?.forEach(({ components }) => {
       const rot = components[Rotation]
-      rot.angle += rot.rotationSpeed
+      rot.angle += rot.rotationSpeed * dt
     })    
   }
 }
