@@ -28,10 +28,19 @@ class Rotation extends Component {
     this.rotationSpeed = 0.7
   }
 }
+
 class Hitbox extends Component {
   constructor(w=10, h=10) {
     super()
     this.w = w
+    this.h = h
+  }
+}
+class Follows extends Component {
+  constructor(entity, w, h) {
+    super()
+    this.entity = entity
+    this.w = w 
     this.h = h
   }
 }
@@ -43,4 +52,5 @@ export {
   Health,
   Hitbox,
   Velocity,
+  Follows,
 }

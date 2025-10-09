@@ -22,6 +22,7 @@ class Level {
     if(!archetype) {
       archetype = this.attachArchetype(components)
     }
+
     // Associate entity with an archetype for easy look-ip
     const entity = new Entity(this.nextEntityId)
     this.nextEntityId++
@@ -36,7 +37,7 @@ class Level {
     // store archetypes associated with an entity
     // use index to get components for a specific entity eg. archetype.componentMap.get(Position)[1] for entity in archetype.entities[1]
     this.entityRecords.set(entity, { archetype, index })
-  
+
     return entity
   }
   getComponent(entity, componentType) {

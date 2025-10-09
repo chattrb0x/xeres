@@ -1,6 +1,6 @@
 import { Query } from './src/query.js'
 import { Level } from './src/level.js'
-import { Health, Rotation, TakesInput, Velocity, Position } from './src/component.js'
+import { Follows, Health, Rotation, TakesInput, Velocity, Position } from './src/component.js'
 import { MovementSystem } from './src/systems/movement.js'
 import { RotationSystem } from './src/systems/rotation.js'
 
@@ -38,6 +38,8 @@ let level = null
 
 // Entity Archetypes
 const PLAYER_ABILITIES = [Health, Position, Rotation, TakesInput, Velocity]
+const CAMERA_ABILITIES = [Follows, Position]
+const ENEMY_ABILITIES = [Health, Position, Rotation, Velocity]
 
 function setup() {
   inputManager.setup()
@@ -47,14 +49,18 @@ function setup() {
   
   // Create Player
   const player = level.createEntity({ components: PLAYER_ABILITIES })
-  
+  // const camera = level.createEntity({ components: CAMERA_ABILITIES })
+  for (let i=0; i < 10; i++) {
+    level.createEntity({ components: ENEMY_ABILITIES })  
+  }
+  console.log(level.entityRecords.size)
   console.log('---')
-  
-  const entityRecords = Query.findEntitiesIn(level, PLAYER_ABILITIES)
-  if (!entityRecords?.length) return
-  const v = entityRecords[0].components[Velocity]
-  v.dx = Math.random()
-  v.dy = Math.random()
+  // let entityRecords = Query.findEntitiesIn(level, CAMERA_ABILITIES)
+  // console.log(entityRecords.length)
+  // const cam = entityRecords[0].components[Follows]
+  // cam.entity = player
+  // cam.w = canvas.width
+  // cam.h = canvas.height
 }
 
 let bouncex = false
@@ -65,22 +71,25 @@ function onUpdate(level, dt) {
   
   // TODO: remove
   // - Hack in some velocity to kick off the movement system
-  const entityRecords = Query.findEntitiesIn(level, PLAYER_ABILITIES)
-  if (!entityRecords?.length) return
+  const entityRecords = Query.findEntitiesIn(level, [TakesInput])
+  if (entityRecords.length < 1) return 
   const v = entityRecords[0].components[Velocity]
   const pos = entityRecords[0].components[Position]
-  
-  if(pos.x >= canvas.width) bouncex = true
-  if(pos.y >= canvas.height) bouncey = true
-  if(pos.x < 0) bouncex = false
-  if(pos.y < 0) bouncey = false
+  if(!pos) return console.log(entityRecords[0])
+  if(pos?.x >= canvas.width) bouncex = true
+  if(pos?.y >= canvas.height) bouncey = true
+  if(pos?.x < 0) bouncex = false
+  if(pos?.y < 0) bouncey = false
   
   v.dx = Math.random() * bouncex ? -1 * 70 : 70
   v.dy = Math.random() * bouncey ? -1 * 70 : 70
   // - Hack - END
   
   RotationSystem.update(level, dt)
-  MovementSystem.update(level, dt) 
+  MovementSystem.update(level, dt)
+  
+  // Moves camera based on player pos so must come last
+  // CameraSystem.update(level, dt)
 }
 
 // TODO: remove
@@ -122,6 +131,7 @@ function onRender() {
   // Query player position for rendering
   const entityRecords = Query.findEntitiesIn(level, PLAYER_ABILITIES)
   if (!entityRecords?.length) return
+  console.log("drawing player")
   const { components } = entityRecords[0]
   const pos = components[Position]
   const rot = components[Rotation]
