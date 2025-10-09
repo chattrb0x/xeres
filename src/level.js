@@ -43,7 +43,7 @@ class Level {
   getComponent(entity, componentType) {
     const { archetype, index: entityIndex } = this.entityRecords.get(entity)
     if (!archetype) return null
-    return archetype.entityComponents(entity, [componentType])[componentType]
+    return archetype.entityComponents(entity, [componentType]).get(componentType)
   }
 }
 

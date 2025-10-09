@@ -51,9 +51,9 @@ function setup() {
   const player = level.createEntity({ components: PLAYER_ABILITIES })
   // const camera = level.createEntity({ components: CAMERA_ABILITIES })
   for (let i=0; i < 10; i++) {
-    level.createEntity({ components: ENEMY_ABILITIES })  
+    //.level.createEntity({ components: ENEMY_ABILITIES })  
   }
-  console.log(level.entityRecords.size)
+  console.log('setup')
   console.log('---')
   // let entityRecords = Query.findEntitiesIn(level, CAMERA_ABILITIES)
   // console.log(entityRecords.length)
@@ -71,11 +71,12 @@ function onUpdate(level, dt) {
   
   // TODO: remove
   // - Hack in some velocity to kick off the movement system
-  const entityRecords = Query.findEntitiesIn(level, [TakesInput])
+  const entityRecords = Query.findEntitiesIn(level, [Position, TakesInput, Velocity])
   if (entityRecords.length < 1) return 
-  const v = entityRecords[0].components[Velocity]
-  const pos = entityRecords[0].components[Position]
+  const v = entityRecords[0].components.get(Velocity)
+  const pos = entityRecords[0].components.get(Position)
   if(!pos) return console.log(entityRecords[0])
+  
   if(pos?.x >= canvas.width) bouncex = true
   if(pos?.y >= canvas.height) bouncey = true
   if(pos?.x < 0) bouncex = false
@@ -131,10 +132,10 @@ function onRender() {
   // Query player position for rendering
   const entityRecords = Query.findEntitiesIn(level, PLAYER_ABILITIES)
   if (!entityRecords?.length) return
-  console.log("drawing player")
+  
   const { components } = entityRecords[0]
-  const pos = components[Position]
-  const rot = components[Rotation]
+  const pos = components.get(Position)
+  const rot = components.get(Rotation)
   // console.log(`Player position: (${pos.x.toFixed(1)}, ${pos.y.toFixed(1)})`)
   
   drawTriangle(ctx, pos.x, pos.y, rot.angle)

@@ -7,8 +7,8 @@ class CameraSystem {
     const entities = Query.findEntitiesIn(level, [Position, TakesInput])
     const player = entities[0]
       
-    const pos = player.components[Position]
-    const camPos = camera.components[Position]
+    const pos = player.components.get(Position)
+    const camPos = camera.components.get(Position)
     
     // Update position based on entity
     camePos.x = pos.x

@@ -12,14 +12,14 @@ class Query {
         // console.log(type.name, archetype.componentsByType.has(type))
         return archetype.componentsByType.has(type)
       })
-      if (!hasAll) continue
+      if (!hasAll) return
       
       // Gather the actual component instances for this entity
       const components = archetype.entityComponents(entity, componentTypes)
      
       results.push({ entity, components })
     }
-    console.log('q:', results.length)
+    // console.log('q:', results[0].components.size)
     return results
   }
 }
