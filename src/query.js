@@ -12,7 +12,7 @@ class Query {
         // console.log(type.name, archetype.componentsByType.has(type))
         return archetype.componentsByType.has(type)
       })
-      if (!hasAll) return
+      if (!hasAll) continue
       
       // Gather the actual component instances for this entity
       const components = archetype.entityComponents(entity, componentTypes)

@@ -32,6 +32,8 @@ const inputManager = new InputManager()
  
 const FPS = 60
 const FIXED_UPDATE_STEP_MS = 1000 / FPS
+const ENTITIES = 1000
+
 let accumulator = 0
 let lastTime = 0
 let level = null
@@ -49,9 +51,9 @@ function setup() {
   
   // Create Player
   const player = level.createEntity({ components: PLAYER_ABILITIES })
-  // const camera = level.createEntity({ components: CAMERA_ABILITIES })
-  for (let i=0; i < 10; i++) {
-    //.level.createEntity({ components: ENEMY_ABILITIES })  
+  const camera = level.createEntity({ components: CAMERA_ABILITIES })
+  for (let i=0; i < ENTITIES; i++) {
+    level.createEntity({ components: ENEMY_ABILITIES })  
   }
   console.log('setup')
   console.log('---')
@@ -63,29 +65,31 @@ function setup() {
   // cam.h = canvas.height
 }
 
-let bouncex = false
-let bouncey = false
+let bouncex = {}
+let bouncey = {}
 
 function onUpdate(level, dt) {
   // InputSystem.update(level, inputManager)
   
   // TODO: remove
   // - Hack in some velocity to kick off the movement system
-  const entityRecords = Query.findEntitiesIn(level, [Position, TakesInput, Velocity])
-  if (entityRecords.length < 1) return 
-  const v = entityRecords[0].components.get(Velocity)
-  const pos = entityRecords[0].components.get(Position)
-  if(!pos) return console.log(entityRecords[0])
-  
-  if(pos?.x >= canvas.width) bouncex = true
-  if(pos?.y >= canvas.height) bouncey = true
-  if(pos?.x < 0) bouncex = false
-  if(pos?.y < 0) bouncey = false
-  
-  v.dx = Math.random() * bouncex ? -1 * 70 : 70
-  v.dy = Math.random() * bouncey ? -1 * 70 : 70
-  // - Hack - END
-  
+  const entityRecords = Query.findEntitiesIn(level, [Position, Velocity])
+  if (entityRecords.length < 1) return
+  entityRecords.forEach(entity => {
+    const v = entity.components.get(Velocity)
+    const pos = entity.components.get(Position)
+    if(!bouncex[entity.id]) bouncex[entity.id] = false
+    if(!bouncey[entity.id]) bouncey[entity.id] = false
+    if(pos?.x >= canvas.width) bouncex[entity.id] = true
+    if(pos?.y >= canvas.height) bouncey[entity.id] = true
+    if(pos.x <= 0) bouncex[entity.id] = false
+    if(pos.y <= 0) bouncey[entity.id] = false
+    
+    v.dx = Math.random() * 50 * (bouncex[entity.id] == true ? -1 * 7 : 7)
+    v.dy = Math.random() * 50 * (bouncey[entity.id] == true ? -1 * 7 : 7)
+    // - Hack - END
+  })
+
   RotationSystem.update(level, dt)
   MovementSystem.update(level, dt)
   
@@ -130,15 +134,17 @@ function onRender() {
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   
   // Query player position for rendering
-  const entityRecords = Query.findEntitiesIn(level, PLAYER_ABILITIES)
+  const entityRecords = Query.findEntitiesIn(level, [Position, Rotation])
   if (!entityRecords?.length) return
+  // console.log(entityRecords.length)
+  entityRecords.forEach(entity => {
+    const { components } = entity
+    const pos = components.get(Position)
+    const rot = components.get(Rotation)
+    // console.log(`Player position: (${pos.x.toFixed(1)}, ${pos.y.toFixed(1)})`)
   
-  const { components } = entityRecords[0]
-  const pos = components.get(Position)
-  const rot = components.get(Rotation)
-  // console.log(`Player position: (${pos.x.toFixed(1)}, ${pos.y.toFixed(1)})`)
-  
-  drawTriangle(ctx, pos.x, pos.y, rot.angle)
+    drawTriangle(ctx, pos.x, pos.y, rot.angle) 
+  })
 }
 
 

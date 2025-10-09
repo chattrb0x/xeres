@@ -9,8 +9,8 @@ class TakesInput extends Component {}
 class Position extends Component {
   constructor(x=0, y=0) {
     super()
-    this.x = x
-    this.y = y
+    this.x = Math.random() * 300
+    this.y = Math.random() * 30
   }
 }
 class Velocity extends Component {
@@ -24,8 +24,8 @@ class Velocity extends Component {
 class Rotation extends Component {
   constructor() {
     super()
-    this.angle = 45
-    this.rotationSpeed = 0.7
+    this.angle = Math.random() * 10
+    this.rotationSpeed = Math.random()
   }
 }
 
