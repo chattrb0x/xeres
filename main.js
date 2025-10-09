@@ -84,10 +84,8 @@ function onUpdate(level, dt) {
     if(pos?.y >= canvas.height) bouncey[entity.id] = true
     if(pos.x <= 0) bouncex[entity.id] = false
     if(pos.y <= 0) bouncey[entity.id] = false
-    
     v.dx = Math.random() * 50 * (bouncex[entity.id] == true ? -1 * 7 : 7)
     v.dy = Math.random() * 50 * (bouncey[entity.id] == true ? -1 * 7 : 7)
-    // - Hack - END
   })
 
   RotationSystem.update(level, dt)
@@ -127,7 +125,8 @@ function drawTriangle(ctx, centerX, centerY, angle) {
   }
 
   ctx.closePath()
-  ctx.fill()
+  ctx.strokeStyle = 'white'
+  ctx.stroke()
 }
 
 function onRender() {
