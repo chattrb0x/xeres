@@ -11,7 +11,7 @@ class Physics {
       const force = body.components.get(Force)
       const mass = body.components.get(Mass)
       const gravity = new Vector2(0, 0.0001)
-      const gravityForce = gravity.clone().scale(mass.mass);
+      const gravityForce = gravity.clone().scale(mass.mass)
       force.vector.x = gravityForce.x
       force.vector.y = gravityForce.y
     }
@@ -20,16 +20,15 @@ class Physics {
   update(bodies, dt) {
     this.applyForces(bodies)
     for (const body of bodies) {
-      console.log(body)
-      if (body.mass <= 0) continue; // skip immovable bodies
+      if (body.mass <= 0) continue // skip immovable bodies
       const pos = body.components.get(Position)
       const vel = body.components.get(Velocity)
       const mass = body.components.get(Mass)
       const force = body.components.get(Force)
       console.log("@@@@ Starting Values", pos, vel, mass, force)
-      const acceleration = force.vector.clone().scale(1 / mass.mass);
-      vel.vector.add(acceleration.clone().scale(dt));
-      pos.vector.add(vel.vector.clone().scale(dt));
+      const acceleration = force.vector.clone().scale(1 / mass.mass)
+      vel.vector.add(acceleration.clone().scale(dt))
+      pos.vector.add(vel.vector.clone().scale(dt))
       force.x = 0
       force.y = 0
       console.log("@@@@ After Update", pos, vel, mass, force)
@@ -42,7 +41,7 @@ class MovementSystem {
   static update(level, dt) {
     // TODO: Pass in the physics to apply
     const physics = new Physics()
-    const bodies = Query.findEntitiesIn(level, [Position, Velocity, Mass, Force])
+    const bodies = Query.findEntitiesIn(level, [Force, Mass, Position, Velocity])
     physics.update(bodies, dt)
   }
 }

@@ -32,16 +32,16 @@ const inputManager = new InputManager()
  
 const FPS = 60
 const FIXED_UPDATE_STEP_MS = 1000 / FPS
-const ENTITIES = 1000
+const ENTITIES = 10
 
 let accumulator = 0
 let lastTime = 0
 let level = null
 
 // Entity Archetypes
-const PLAYER_ABILITIES = [Health, Position, Rotation, TakesInput, Velocity, Mass, Force]
+const PLAYER_ABILITIES = [Force, Health, Mass, Position, Rotation, TakesInput, Velocity]
 const CAMERA_ABILITIES = [Follows, Position]
-const ENEMY_ABILITIES = [Health, Position, Rotation, Velocity]
+const ENEMY_ABILITIES = [Force, Health, Mass, Position, Rotation, Velocity]
 
 function setup() {
   inputManager.setup()
@@ -70,7 +70,7 @@ let bouncey = {}
 
 function onUpdate(level, dt) {
   // InputSystem.update(level, inputManager)
-  console.log("Updating movement system")
+  
   MovementSystem.update(level, FIXED_UPDATE_STEP_MS)
   
   // TODO: un remove? 
