@@ -1,6 +1,6 @@
 import { Archetype } from './archetype.js'
 import { Entity } from './entity.js'
-import { Screen } from './screen.js'
+import { Screen, SCREEN_WIDTH, SCREEN_HEIGHT } from './screen.js'
 
 class Level {
   constructor(size=16) {
@@ -10,7 +10,7 @@ class Level {
     
     this.screens = []
     for(let i = 0; i < size; i++) {
-      this.screens.push(new Screen(320, 240, i))
+      this.screens.push(new Screen(SCREEN_WIDTH, SCREEN_HEIGHT, i))
     }
   }
   hasArchetype(components) {

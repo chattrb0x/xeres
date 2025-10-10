@@ -30,8 +30,7 @@ class InputManager {
 }
 const inputManager = new InputManager()
 
-const SCREEN_HEIGHT = 240
-const SCREEN_WIDTH = 320
+
 const FPS = 60
 const FIXED_UPDATE_STEP_MS = 1000 / FPS
 const ENTITIES = 300

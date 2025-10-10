@@ -1,11 +1,11 @@
 import { Position, Velocity, Mass, Force } from '../component.js'
 import { Query } from '../query.js'
 import { Vector2 } from '../vector.js'
-
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../screen.js'
 
 function getScreenIndex({ x, y }, perRow = 4) {
-  const colIndex = Math.floor(x / 320)
-  const rowIndex = Math.floor(y / 240)
+  const colIndex = Math.floor(x / SCREEN_WIDTH)
+  const rowIndex = Math.floor(y / SCREEN_HEIGHT)
   return (rowIndex * perRow) + colIndex
 }
 
@@ -40,8 +40,8 @@ class Physics {
       
       // TODO: break out to its own system
       // Track screen position
-      pos.x = pos.vector.x % 320
-      pos.y = pos.vector.y % 240
+      pos.x = pos.vector.x % SCREEN_WIDTH
+      pos.y = pos.vector.y % SCREEN_HEIGHT
       pos.screenIndex = getScreenIndex(pos)
     }
   }
