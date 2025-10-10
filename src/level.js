@@ -1,11 +1,17 @@
 import { Archetype } from './archetype.js'
 import { Entity } from './entity.js'
+import { Screen } from './screen.js'
 
 class Level {
-  constructor() {
+  constructor(size=16) {
     this.nextEntityId = 1
     this.archetypes = new Map()
     this.entityRecords = new Map()
+    
+    this.screens = []
+    for(let i = 0; i < size; i++) {
+      this.screens.push(new Screen(320, 240, i))
+    }
   }
   hasArchetype(components) {
     const sig = Archetype.makeSignature(components)

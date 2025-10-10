@@ -12,6 +12,9 @@ class Position extends Component {
   constructor(v = new Vector2(0, 0)) {
     super()
     this.vector = v
+    this.x = 0
+    this.y = 0
+    this.screenIndex = 0
   }
 }
 class Velocity extends Component {

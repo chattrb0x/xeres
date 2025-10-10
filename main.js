@@ -29,10 +29,12 @@ class InputManager {
   }
 }
 const inputManager = new InputManager()
- 
+
+const SCREEN_HEIGHT = 240
+const SCREEN_WIDTH = 320
 const FPS = 60
 const FIXED_UPDATE_STEP_MS = 1000 / FPS
-const ENTITIES = 10
+const ENTITIES = 300
 
 let accumulator = 0
 let lastTime = 0
@@ -57,12 +59,13 @@ function setup() {
   }
   console.log('setup')
   console.log('---')
-  // let entityRecords = Query.findEntitiesIn(level, CAMERA_ABILITIES)
+  
+  let entityRecords = Query.findEntitiesIn(level, CAMERA_ABILITIES)
   // console.log(entityRecords.length)
-  // const cam = entityRecords[0].components[Follows]
-  // cam.entity = player
-  // cam.w = canvas.width
-  // cam.h = canvas.height
+  const cam = entityRecords[0].components.get(Follows)
+  cam.entity = player
+  cam.w = canvas.width
+  cam.h = canvas.height
 }
 
 let bouncex = {}
@@ -70,8 +73,6 @@ let bouncey = {}
 
 function onUpdate(level, dt) {
   // InputSystem.update(level, inputManager)
-  
-  MovementSystem.update(level, FIXED_UPDATE_STEP_MS)
   
   // TODO: un remove? 
   // TODO: remove
@@ -91,8 +92,8 @@ function onUpdate(level, dt) {
   //   v.dy = Math.random() * 50 * (bouncey[entity.id] == true ? -1 * 7 : 7)
   // })
 
-  // RotationSystem.update(level, dt)
-  // MovementSystem.update(level, dt)
+  RotationSystem.update(level, dt)
+  MovementSystem.update(level, dt)
   
   // Moves camera based on player pos so must come last
   // CameraSystem.update(level, dt)
@@ -157,7 +158,7 @@ function loop(currentTime) {
  
   accumulator += frameTime
   while(accumulator >= FIXED_UPDATE_STEP_MS) {
-    onUpdate(level, (1/FPS))
+    onUpdate(level, FIXED_UPDATE_STEP_MS)
     accumulator -= FIXED_UPDATE_STEP_MS
   }
    
