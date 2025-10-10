@@ -1,3 +1,5 @@
+import { Vector2 } from "./vector.js"
+
 class Component {}
 class Health extends Component {
   constructor(hp=1000) {
@@ -7,17 +9,15 @@ class Health extends Component {
 }
 class TakesInput extends Component {}
 class Position extends Component {
-  constructor(x=0, y=0) {
+  constructor(v = new Vector2(0, 0)) {
     super()
-    this.x = x
-    this.y = y
+    this.vector = v
   }
 }
 class Velocity extends Component {
-  constructor(x=0, y=0) {
+  constructor(v = new Vector2(0, 0)) {
     super()
-    this.x = x
-    this.y = y
+    this.vector = v
   }
 }
 class Hitbox extends Component {
@@ -27,6 +27,18 @@ class Hitbox extends Component {
     this.h = h
   }
 }
+class Mass extends Component {
+  constructor(mass=1) {
+    super()
+    this.mass = mass
+  }
+}
+class Force extends Component {
+  constructor(v = new Vector2(0, 0)){
+    super()
+    this.vector = v
+  }
+}
 
 export {
   TakesInput,
@@ -34,4 +46,6 @@ export {
   Health,
   Hitbox,
   Velocity,
+  Mass,
+  Force,
 }

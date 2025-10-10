@@ -1,6 +1,6 @@
 import { Query } from './src/query.js'
 import { Level } from './src/level.js'
-import { Health, TakesInput, Velocity, Position } from './src/component.js'
+import { Health, TakesInput, Velocity, Position, Mass, Force } from './src/component.js'
 import { MovementSystem } from './src/systems/movement.js'
 
 // Setup main canvas
@@ -36,7 +36,7 @@ let lastTime = 0
 let level = null
 
 // Entity Archetypes
-const PLAYER_ABILITIES = [Health, Position, TakesInput, Velocity]
+const PLAYER_ABILITIES = [Health, Position, TakesInput, Velocity, Mass, Force]
 
 function setup() {
   inputManager.setup()
@@ -51,14 +51,12 @@ function setup() {
   
   const entityRecords = Query.findEntitiesIn(level, PLAYER_ABILITIES)
   if (!entityRecords?.length) return
-  const v = entityRecords[0].components[Velocity]
-  v.x = Math.random()
-  v.y = Math.random()
 }
 
 function onUpdate(level) {
   // InputSystem.update(level, inputManager)
-  MovementSystem.update(level)
+  console.log("Updating movement system")
+  MovementSystem.update(level, FIXED_UPDATE_STEP_MS)
 }
 
 function drawTriangle(ctx, x, y) {
@@ -81,7 +79,7 @@ function onRender() {
   
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   
-  drawTriangle(ctx, pos.x, pos.y)
+  drawTriangle(ctx, pos.vector.x, pos.vector.y)
 }
 
 function loop(currentTime) {
