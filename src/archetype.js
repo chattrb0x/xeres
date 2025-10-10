@@ -23,11 +23,10 @@ class Archetype {
   entityComponents(entity, componentTypes) {
     const index = this.entityIds.indexOf(entity.id)
 
-    const componentsForEntity = {}
+    const componentsForEntity = new Map()
     componentTypes.forEach(type => {
       const instances = this.componentsByType.get(type)
-      console.log(instances.map(i => i.constructor.name))
-      componentsForEntity[type] = instances[index]
+      componentsForEntity.set(type, instances[index])
     })
     return componentsForEntity
   }

@@ -15,11 +15,20 @@ class Position extends Component {
   }
 }
 class Velocity extends Component {
-  constructor(v = new Vector2(0, 0)) {
+  constructor(v = new Vector2(0, 0), maxSpeed=3) {
     super()
     this.vector = v
+    this.maxSpeed = maxSpeed
   }
 }
+class Rotation extends Component {
+  constructor() {
+    super()
+    this.angle = Math.random() * 10
+    this.rotationSpeed = Math.random()
+  }
+}
+
 class Hitbox extends Component {
   constructor(w=10, h=10) {
     super()
@@ -39,8 +48,17 @@ class Force extends Component {
     this.vector = v
   }
 }
+class Follows extends Component {
+  constructor(entity, w, h) {
+    super()
+    this.entity = entity
+    this.w = w 
+    this.h = h
+  }
+}
 
 export {
+  Rotation,
   TakesInput,
   Position,
   Health,
@@ -48,4 +66,5 @@ export {
   Velocity,
   Mass,
   Force,
+  Follows,
 }

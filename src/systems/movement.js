@@ -8,8 +8,8 @@ class Physics {
   applyForces(bodies) {
     // TODO: Do something fancier than just downward gravity.
     for (const body of bodies) {
-      const force = body.components[Force]
-      const mass = body.components[Mass]
+      const force = body.components.get(Force)
+      const mass = body.components.get(Mass)
       const gravity = new Vector2(0, 0.0001)
       const gravityForce = gravity.clone().scale(mass.mass);
       force.vector.x = gravityForce.x
@@ -22,10 +22,10 @@ class Physics {
     for (const body of bodies) {
       console.log(body)
       if (body.mass <= 0) continue; // skip immovable bodies
-      const pos = body.components[Position]
-      const vel = body.components[Velocity]
-      const mass = body.components[Mass]
-      const force = body.components[Force]
+      const pos = body.components.get(Position)
+      const vel = body.components.get(Velocity)
+      const mass = body.components.get(Mass)
+      const force = body.components.get(Force)
       console.log("@@@@ Starting Values", pos, vel, mass, force)
       const acceleration = force.vector.clone().scale(1 / mass.mass);
       vel.vector.add(acceleration.clone().scale(dt));
