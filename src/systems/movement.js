@@ -15,10 +15,9 @@ class Physics {
     for (const body of bodies) {
       const force = body.components.get(Force)
       const mass = body.components.get(Mass)
-      const gravity = new Vector2(0, 0.0001)
+      const gravity = new Vector2(0, 0) // new Vector2(0, 0.0001)
       const gravityForce = gravity.clone().scale(mass.mass)
-      force.vector.x = gravityForce.x
-      force.vector.y = gravityForce.y
+      force.vector.add(gravityForce)  
     }
   }
 
@@ -34,8 +33,7 @@ class Physics {
       const acceleration = force.vector.clone().scale(1 / mass.mass)
       vel.vector.add(acceleration.clone().scale(dt))
       pos.vector.add(vel.vector.clone().scale(dt))
-      force.x = 0
-      force.y = 0
+      force.vector = new Vector2(0, 0)
       // console.log("@@@@ After Update", pos, vel, mass, force)
       
       // TODO: break out to its own system
