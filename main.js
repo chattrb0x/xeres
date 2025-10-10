@@ -68,36 +68,15 @@ function setup() {
   console.log('---')
   
   let entityRecords = Query.findEntitiesIn(level, CAMERA_ABILITIES)
-  // console.log(entityRecords.length)
   const cam = entityRecords[0].components.get(Follows)
   cam.entity = player
   cam.w = canvas.width
   cam.h = canvas.height
 }
 
-let bouncex = {}
-let bouncey = {}
 
 function onUpdate(level, dt) {
   // InputSystem.update(level, inputManager)
-  
-  // TODO: un remove? 
-  // TODO: remove
-  // - Hack in some velocity to kick off the movement system
-  // const entityRecords = Query.findEntitiesIn(level, [Position, Velocity])
-  // if (entityRecords.length < 1) return
-  // entityRecords.forEach(entity => {
-  //   const v = entity.components.get(Velocity)
-  //   const pos = entity.components.get(Position)
-  //   if(!bouncex[entity.id]) bouncex[entity.id] = false
-  //   if(!bouncey[entity.id]) bouncey[entity.id] = false
-  //   if(pos?.x >= canvas.width) bouncex[entity.id] = true
-  //   if(pos?.y >= canvas.height) bouncey[entity.id] = true
-  //   if(pos.x <= 0) bouncex[entity.id] = false
-  //   if(pos.y <= 0) bouncey[entity.id] = false
-  //   v.dx = Math.random() * 50 * (bouncex[entity.id] == true ? -1 * 7 : 7)
-  //   v.dy = Math.random() * 50 * (bouncey[entity.id] == true ? -1 * 7 : 7)
-  // })
 
   RotationSystem.update(level, dt)
   MovementSystem.update(level, dt)
