@@ -1,6 +1,7 @@
 import { Vector2 } from "./vector.js"
 
 class Component {}
+class BackgroundLayer extends Component {}
 class Health extends Component {
   constructor(hp=1000) {
     super()
@@ -61,6 +62,7 @@ class Follows extends Component {
 }
 
 export {
+  BackgroundLayer,
   Rotation,
   TakesInput,
   Position,
