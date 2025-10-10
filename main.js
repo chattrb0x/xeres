@@ -1,6 +1,6 @@
 import { Query } from './src/query.js'
 import { Level } from './src/level.js'
-import { Follows, Health, Rotation, TakesInput, Velocity, Position } from './src/component.js'
+import { Follows, Health, Rotation, TakesInput, Velocity, Position, Mass, Force } from './src/component.js'
 import { MovementSystem } from './src/systems/movement.js'
 import { RotationSystem } from './src/systems/rotation.js'
 
@@ -39,7 +39,7 @@ let lastTime = 0
 let level = null
 
 // Entity Archetypes
-const PLAYER_ABILITIES = [Health, Position, Rotation, TakesInput, Velocity]
+const PLAYER_ABILITIES = [Health, Position, Rotation, TakesInput, Velocity, Mass, Force]
 const CAMERA_ABILITIES = [Follows, Position]
 const ENEMY_ABILITIES = [Health, Position, Rotation, Velocity]
 
@@ -70,26 +70,29 @@ let bouncey = {}
 
 function onUpdate(level, dt) {
   // InputSystem.update(level, inputManager)
+  console.log("Updating movement system")
+  MovementSystem.update(level, FIXED_UPDATE_STEP_MS)
   
+  // TODO: un remove? 
   // TODO: remove
   // - Hack in some velocity to kick off the movement system
-  const entityRecords = Query.findEntitiesIn(level, [Position, Velocity])
-  if (entityRecords.length < 1) return
-  entityRecords.forEach(entity => {
-    const v = entity.components.get(Velocity)
-    const pos = entity.components.get(Position)
-    if(!bouncex[entity.id]) bouncex[entity.id] = false
-    if(!bouncey[entity.id]) bouncey[entity.id] = false
-    if(pos?.x >= canvas.width) bouncex[entity.id] = true
-    if(pos?.y >= canvas.height) bouncey[entity.id] = true
-    if(pos.x <= 0) bouncex[entity.id] = false
-    if(pos.y <= 0) bouncey[entity.id] = false
-    v.dx = Math.random() * 50 * (bouncex[entity.id] == true ? -1 * 7 : 7)
-    v.dy = Math.random() * 50 * (bouncey[entity.id] == true ? -1 * 7 : 7)
-  })
+  // const entityRecords = Query.findEntitiesIn(level, [Position, Velocity])
+  // if (entityRecords.length < 1) return
+  // entityRecords.forEach(entity => {
+  //   const v = entity.components.get(Velocity)
+  //   const pos = entity.components.get(Position)
+  //   if(!bouncex[entity.id]) bouncex[entity.id] = false
+  //   if(!bouncey[entity.id]) bouncey[entity.id] = false
+  //   if(pos?.x >= canvas.width) bouncex[entity.id] = true
+  //   if(pos?.y >= canvas.height) bouncey[entity.id] = true
+  //   if(pos.x <= 0) bouncex[entity.id] = false
+  //   if(pos.y <= 0) bouncey[entity.id] = false
+  //   v.dx = Math.random() * 50 * (bouncex[entity.id] == true ? -1 * 7 : 7)
+  //   v.dy = Math.random() * 50 * (bouncey[entity.id] == true ? -1 * 7 : 7)
+  // })
 
-  RotationSystem.update(level, dt)
-  MovementSystem.update(level, dt)
+  // RotationSystem.update(level, dt)
+  // MovementSystem.update(level, dt)
   
   // Moves camera based on player pos so must come last
   // CameraSystem.update(level, dt)
@@ -142,7 +145,7 @@ function onRender() {
     const rot = components.get(Rotation)
     // console.log(`Player position: (${pos.x.toFixed(1)}, ${pos.y.toFixed(1)})`)
   
-    drawTriangle(ctx, pos.x, pos.y, rot.angle) 
+    drawTriangle(ctx, pos.vector.x, pos.vector.y, rot.angle) 
   })
 }
 

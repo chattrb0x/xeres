@@ -8,9 +8,17 @@ class Vector2 {
     this.y += v.y
     return this
   }
-  subtract(v) {}
-  multiply(v) {}
-  divide(v) {}
+  subtract(v) {
+    return this.add(v.scale(-1))
+  }
+  scale(s) {
+    this.x *= s
+    this.y *= s
+    return this
+  }
+  clone() {
+    return new Vector2(this.x, this.y)
+  }
 }
 
 export { Vector2 }
