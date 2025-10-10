@@ -145,7 +145,13 @@ function drawBg(ctx, x, y) {
 }
 function onRender() {
   ctx.clearRect(0, 0, canvas.width, canvas.height)
+  ctx.save()
   
+  const cameras = Query.findEntitiesIn(level, [Follows, Position])
+  const camera = cameras[0]
+  const camPos = camera.components.get(Position)
+  ctx.translate(-camPos.x, -camPos.y)
+
   const bg = Query.findEntitiesIn(level, [BackgroundLayer, Position])
   bg.forEach(entity => {
     const { components } = entity
@@ -165,6 +171,8 @@ function onRender() {
   
     drawTriangle(ctx, pos.vector.x, pos.vector.y, rot.angle) 
   })
+  
+  ctx.restore()
 }
 
 
