@@ -1,7 +1,7 @@
 import { Position } from './component.js'
 
 class Query {
-  static find(level, componentTypes) {
+  static findAll(level, componentTypes) {
     const results = []
     for (const [entity, data] of level.entityRecords) {
       
@@ -21,6 +21,10 @@ class Query {
     }
     // console.log('q:', results[0].components.size)
     return results
+  }
+  static find(level, componentTypes) {
+    const results = Query.findAll(level,componentTypes)
+    return results[0]
   }
 }
 

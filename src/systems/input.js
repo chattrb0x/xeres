@@ -44,7 +44,7 @@ const inputManager = new InputManager()
 
 class InputSystem {
   static update(level, dt) {
-    const entityRecords = Query.find(level, [Force, Rotation])
+    const entityRecords = Query.findAll(level, [Force, Rotation])
     if (!entityRecords?.length) return
     const moveStrength = 0.0005
     const rotationStrength = 0.1

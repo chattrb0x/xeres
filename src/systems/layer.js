@@ -3,7 +3,7 @@ import { Query } from '../query.js'
 
 class LayerSystem {
   static setup(level, dt) {
-    const bg = Query.find(level, [BackgroundLayer, Position])
+    const bg = Query.findAll(level, [BackgroundLayer, Position])
     let row = 0
     const gridSize = 32
     for(let i=0; i < bg.length; i++) {
