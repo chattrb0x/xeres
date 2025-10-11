@@ -5,6 +5,7 @@ import { MovementSystem } from './src/systems/movement.js'
 import { RotationSystem } from './src/systems/rotation.js'
 import { LayerSystem } from './src/systems/layer.js'
 import { CameraSystem } from './src/systems/camera.js'
+import { InputSystem } from './src/systems/input.js'
 import { Vector2 } from './src/vector.js'
 
 // Setup main canvas
@@ -12,46 +13,6 @@ const canvas = document.querySelector('canvas')
 const ctx = canvas.getContext('2d')
 
 console.log('----------\n start \n ----------')
-
-/** utilities */
-class InputManager {
-  constructor() {
-    this.keysDown = new Set()
-    this.keysPressed = new Set()
-    this.keysReleased = new Set()
-    this.setup()
-  }
-  setup() {
-    window.addEventListener('keydown', (e) => this.onKeyDown(e))
-    window.addEventListener('keyup', (e) => this.onKeyUp(e))
-  }
-  onKeyDown(e) {
-    if (!this.keysDown.has(e.code)) {
-      this.keysPressed.add(e.code)
-    }
-    this.keysDown.add(e.code)
-  }
-  onKeyUp(e) {
-    this.keysDown.delete(e.code)
-    this.keysReleased.add(e.code)
-  }
-  getKey(keyCode) {
-    return this.keysPressed.has(keyCode)
-  }
-  getKeyDown(keyCode) {
-    return this.keysDown.has(keyCode)
-  }
-  getKeyUp(keyCode) {
-    return this.keysReleased.has(keyCode)
-  }
-  endFrame() {
-    this.keysPressed.clear()
-    this.keysDown.clear()
-    this.keysReleased.clear()
-  }
-
-}
-const inputManager = new InputManager()
 
 const FPS = 60
 const FIXED_UPDATE_STEP_MS = 1000 / FPS
@@ -69,7 +30,6 @@ const VULCAN_ABILITIES = [Force, Health, Position, ScreenPosition, Velocity]
 const MISSILE_ABILITIES = [Force, Health, Mass, Position, Rotation, ScreenPosition, Velocity]
 
 function setup() {
-  inputManager.setup()
   lastTime = performance.now()
   
   level = new Level()
@@ -100,7 +60,7 @@ function setup() {
 
 
 function onUpdate(level, dt) {
-  // InputSystem.update(level, inputManager)
+  InputSystem.update(level, dt)
 
   RotationSystem.update(level, dt)
   MovementSystem.update(level, dt)
@@ -201,39 +161,11 @@ function onRender() {
   ctx.restore()
 }
 
-
-// TODO: Custom input response goes here.
-function exampleGameUpdate(dt) {
-  const entityRecords = Query.findEntitiesIn(level, [Force])
-  if (!entityRecords?.length) return
-  const moveStrength = 0.001
-  entityRecords.forEach(entity => {
-    const { components } = entity
-    const entityForce = components.get(Force)
-    if (inputManager.getKeyDown("ArrowLeft")) {
-        entityForce.vector.add(new Vector2(-moveStrength, 0))
-    }
-    if (inputManager.getKeyDown("ArrowRight")) {
-        entityForce.vector.add(new Vector2(moveStrength, 0))
-    }
-    if (inputManager.getKeyDown("Space") || inputManager.getKeyDown("ArrowUp")) {
-      // -1 for up because of canvas flipped y?  
-      entityForce.vector.add(new Vector2(0, -moveStrength))
-    }
-    if (inputManager.getKeyDown("ArrowDown")) {
-        entityForce.vector.add(new Vector2(0, moveStrength))
-    } 
-  })
-}
-
-
-function loop(currentTime, gameLogicUpdate=exampleGameUpdate) {
+function loop(currentTime) {
   let frameTime = currentTime - lastTime
   lastTime = currentTime
   if(frameTime > 100) frameTime = 100
  
-  gameLogicUpdate(FIXED_UPDATE_STEP_MS)
-
   accumulator += frameTime
   while(accumulator >= FIXED_UPDATE_STEP_MS) {
     onUpdate(level, FIXED_UPDATE_STEP_MS)

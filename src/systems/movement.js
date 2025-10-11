@@ -15,7 +15,7 @@ class Physics {
     for (const body of bodies) {
       const force = body.components.get(Force)
       const mass = body.components.get(Mass)
-      const gravity = new Vector2(0, 0.0001) // new Vector2(0, 0.0001)
+      const gravity = new Vector2(0, 0) // new Vector2(0, 0.0001)
       const gravityForce = gravity.clone().scale(mass.mass)
       force.vector.add(gravityForce)  
     }
