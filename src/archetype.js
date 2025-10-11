@@ -20,6 +20,18 @@ class Archetype {
     
     // Track instances of components by constructor
     // No sorting required; Map already sorted at instantiation
+    for (const [key, value] of components) {
+      this.componentsByType.get(key).push(value)
+    }
+    
+    // return the index of the entity
+    return this.entityIds.length - 1
+  }
+  addByType(entity, components) {
+    this.entityIds.push(entity.id)
+    
+    // Track instances of components by constructor
+    // No sorting required; Map already sorted at instantiation
     components.forEach(SomeComponentType => {
       this.componentsByType.get(SomeComponentType).push(new SomeComponentType())
     })

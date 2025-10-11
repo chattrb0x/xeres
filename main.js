@@ -6,6 +6,7 @@ import { RotationSystem } from './src/systems/rotation.js'
 import { LayerSystem } from './src/systems/layer.js'
 import { CameraSystem } from './src/systems/camera.js'
 import { InputSystem } from './src/systems/input.js'
+import { ENEMY_ABILITIES, EnemySpawnerSystem } from './src/systems/spawner.js'
 import { Vector2 } from './src/vector.js'
 
 // Setup main canvas
@@ -25,7 +26,6 @@ let level = null
 // Entity Archetypes
 const PLAYER_ABILITIES = [Force, Health, Mass, Position, Rotation, ScreenPosition, TakesInput, Velocity]
 const CAMERA_ABILITIES = [Follows, ScreenPosition]
-const ENEMY_ABILITIES = [Force, Health, Mass, Position, Rotation, ScreenPosition, Velocity]
 const VULCAN_ABILITIES = [Force, Health, Position, ScreenPosition, Velocity]
 const MISSILE_ABILITIES = [Force, Health, Mass, Position, Rotation, ScreenPosition, Velocity]
 
@@ -37,20 +37,20 @@ function setup() {
   // Background grid
   const cols = 64
   const rows = 36
-  for(let g = 0; g < cols * rows; g++) level.createEntity({ components: [Position, BackgroundLayer] })
+  for(let g = 0; g < cols * rows; g++) level.createEntityByType({ components: [Position, BackgroundLayer] })
   LayerSystem.setup(level)
   
-  const player = level.createEntity({ components: PLAYER_ABILITIES })
-  level.createEntity({ components: CAMERA_ABILITIES })
+  const player = level.createEntityByType({ components: PLAYER_ABILITIES })
+  level.createEntityByType({ components: CAMERA_ABILITIES })
   for (let i=0; i < ENTITIES; i++) {
-    level.createEntity({ components: ENEMY_ABILITIES })  
+    level.createEntityByType({ components: ENEMY_ABILITIES })  
   }
   
   CameraSystem.setup(level, player, canvas.width, canvas.height)
   
   let entityRecord = Query.find(level, PLAYER_ABILITIES)
-  const obj = entityRecord.components.get(Position)
-  obj.vector = new Vector2(-100, -100)
+  const position = entityRecord.components.get(Position)
+  position.vector = new Vector2(-100, -100)
 }
 
 
@@ -59,7 +59,8 @@ function onUpdate(level, dt) {
 
   RotationSystem.update(level, dt)
   MovementSystem.update(level, dt)
-  
+  EnemySpawnerSystem.update(level, dt)
+
   // Moves camera based on player pos so must come last
   CameraSystem.update(level, dt)
 }
