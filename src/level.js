@@ -23,7 +23,41 @@ class Level {
     this.archetypes.set(archetype.signature, archetype)
     return archetype
   }
-  createEntity({ components }) {
+  createEntity(componentMap){
+    /*
+      Args:
+        components: A map of the type of a component to an instance of that component.
+    */
+    let componentTypes = []
+    for (const [key, value] of componentMap) {
+      if (!(value instanceof key)) {
+        throw new Error(`Expected object in component map to be an instance of its respective key. Got {${key}: ${value}}`)
+      }
+      componentTypes.push(key)
+    }  
+    
+    let archetype = this.hasArchetype(componentTypes)
+    if(!archetype) {
+      archetype = this.attachArchetype(componentTypes)
+    }
+
+    // Associate entity with an archetype for easy look-ip
+    const entity = new Entity(this.nextEntityId)
+    this.nextEntityId++
+    
+    const index = archetype.add(entity, componentMap)
+    
+    // store archetypes associated with an entity
+    // use index to get components for a specific entity eg. archetype.componentMap.get(Position)[1] for entity in archetype.entities[1]
+    this.entityRecords.set(entity, { archetype, index })
+
+    return entity
+  }
+  createEntityByType({ components }) {
+    /*
+      Args:
+        componentTypes: The types of the new components to create. New component instances will be created with default args.
+    */
     let archetype = this.hasArchetype(components)
     if(!archetype) {
       archetype = this.attachArchetype(components)
@@ -33,7 +67,7 @@ class Level {
     const entity = new Entity(this.nextEntityId)
     this.nextEntityId++
     
-    const index = archetype.add(entity, components)
+    const index = archetype.addByType(entity, components)
     
     // store archetypes associated with an entity
     // use index to get components for a specific entity eg. archetype.componentMap.get(Position)[1] for entity in archetype.entities[1]
