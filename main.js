@@ -47,13 +47,13 @@ function setup() {
     level.createEntity({ components: ENEMY_ABILITIES })  
   }
   
-  let entityRecords = Query.findEntitiesIn(level, CAMERA_ABILITIES)
+  let entityRecords = Query.find(level, CAMERA_ABILITIES)
   const cam = entityRecords[0].components.get(Follows)
   cam.entity = player
   cam.w = canvas.width
   cam.h = canvas.height
   
-  entityRecords = Query.findEntitiesIn(level, PLAYER_ABILITIES)
+  entityRecords = Query.find(level, PLAYER_ABILITIES)
   const obj = entityRecords[0].components.get(Position)
   obj.vector = new Vector2(-100, -100)
 }
@@ -134,12 +134,12 @@ function onRender() {
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   ctx.save()
   
-  const cameras = Query.findEntitiesIn(level, [Follows, ScreenPosition])
+  const cameras = Query.find(level, [Follows, ScreenPosition])
   const camera = cameras[0]
   const camPos = camera.components.get(ScreenPosition)
   ctx.translate(-camPos.x, -camPos.y)
 
-  const bg = Query.findEntitiesIn(level, [BackgroundLayer, Position])
+  const bg = Query.find(level, [BackgroundLayer, Position])
   bg.forEach(entity => {
     const { components } = entity
     const pos = components.get(Position)
@@ -147,7 +147,7 @@ function onRender() {
   })
   
   // Query player position for rendering 
-  const entityRecords = Query.findEntitiesIn(level, [Position, Rotation])
+  const entityRecords = Query.find(level, [Position, Rotation])
   if (!entityRecords?.length) return
   // console.log(entityRecords.length)
   entityRecords.forEach(entity => {

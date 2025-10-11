@@ -1,13 +1,13 @@
 import { Position } from './component.js'
 
 class Query {
-  static findEntitiesIn(level, componentTypes) {
+  static find(level, componentTypes) {
     const results = []
     for (const [entity, data] of level.entityRecords) {
       
       const { archetype, index } = data
       
-      // Check if archetype has all required components
+      // Check if archetype has all components passed as arg
       const hasAll = componentTypes.every(type => {
         // console.log(type.name, archetype.componentsByType.has(type))
         return archetype.componentsByType.has(type)

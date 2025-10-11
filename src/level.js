@@ -33,12 +33,7 @@ class Level {
     const entity = new Entity(this.nextEntityId)
     this.nextEntityId++
     
-    const index = archetype.add(entity)
-    
-    // Track instances of components by constructor
-    Archetype.sortComponents(components).forEach(SomeComponentType => {
-      archetype.componentsByType.get(SomeComponentType).push(new SomeComponentType())
-    })
+    const index = archetype.add(entity, components)
     
     // store archetypes associated with an entity
     // use index to get components for a specific entity eg. archetype.componentMap.get(Position)[1] for entity in archetype.entities[1]

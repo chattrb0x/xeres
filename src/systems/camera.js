@@ -3,10 +3,10 @@ import { Query } from '../query.js'
 
 class CameraSystem {
   static update(level, dt) {
-    const cameras = Query.findEntitiesIn(level, [Follows, ScreenPosition])
+    const cameras = Query.find(level, [Follows, ScreenPosition])
     const camera = cameras[0]
     
-    const entities = Query.findEntitiesIn(level, [Position, TakesInput])
+    const entities = Query.find(level, [Position, TakesInput])
     const player = entities[0]
       
     const pos = player.components.get(Position)

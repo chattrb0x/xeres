@@ -51,7 +51,7 @@ class MovementSystem {
   static update(level, dt) {
     // TODO: Pass in the physics to apply
     const physics = new Physics()
-    const bodies = Query.findEntitiesIn(level, [Force, Mass, Position, ScreenPosition, Velocity])
+    const bodies = Query.find(level, [Force, Mass, Position, ScreenPosition, Velocity])
     physics.update(bodies, dt)
   }
 }
