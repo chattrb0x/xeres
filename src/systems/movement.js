@@ -15,7 +15,7 @@ class Physics {
     for (const body of bodies) {
       const force = body.components.get(Force)
       const mass = body.components.get(Mass)
-      const gravity = new Vector2(0, 0.00001) // new Vector2(0, 0.0001)
+      const gravity = new Vector2(0, 0.0001) // new Vector2(0, 0.0001)
       const gravityForce = gravity.clone().scale(mass.mass)
       force.vector.add(gravityForce)  
     }
@@ -38,9 +38,7 @@ class Physics {
       
       // TODO: break out to its own system
       // Track screen position
-      pos.x = pos.vector.x % SCREEN_WIDTH
-      pos.y = pos.vector.y % SCREEN_HEIGHT
-      pos.screenIndex = getScreenIndex(pos)
+      pos.screenIndex = getScreenIndex({ x: pos.vector.x % SCREEN_WIDTH, y: pos.vector.y % SCREEN_HEIGHT })
     }
   }
 }

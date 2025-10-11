@@ -92,6 +92,7 @@ function setup() {
   cam.entity = player
   cam.w = canvas.width
   cam.h = canvas.height
+  
   entityRecords = Query.findEntitiesIn(level, PLAYER_ABILITIES)
   const obj = entityRecords[0].components.get(Position)
   obj.vector = new Vector2(-100, -100)
@@ -170,7 +171,7 @@ function onRender() {
     const pos = components.get(Position)
     const rot = components.get(Rotation)
     // console.log(`Player position: (${pos.x.toFixed(1)}, ${pos.y.toFixed(1)})`)
-      drawTriangle(ctx, pos.vector.x, pos.vector.y, rot.angle) 
+    drawTriangle(ctx, pos.vector.x, pos.vector.y, rot.angle) 
   })
   
   ctx.restore()

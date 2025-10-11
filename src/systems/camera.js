@@ -13,8 +13,8 @@ class CameraSystem {
     const camPos = camera.components.get(Position)
     
     // Update position based on entity
-    camPos.x = pos.x
-    camPos.y = pos.y
+    camPos.x = pos.vector.x
+    camPos.y = pos.vector.y
   }
 }
 
