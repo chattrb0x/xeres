@@ -139,7 +139,7 @@ function drawTriangle(ctx, centerX, centerY, angle) {
   }
 
   ctx.closePath()
-  ctx.strokeStyle = 'white'
+  ctx.strokeStyle = '#EEEEEE'
   ctx.stroke()
 }
 function drawBg(ctx, x, y) {
