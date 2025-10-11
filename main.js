@@ -40,20 +40,15 @@ function setup() {
   for(let g = 0; g < cols * rows; g++) level.createEntity({ components: [Position, BackgroundLayer] })
   LayerSystem.setup(level)
   
-  // Create Player
   const player = level.createEntity({ components: PLAYER_ABILITIES })
-  const camera = level.createEntity({ components: CAMERA_ABILITIES })
+  level.createEntity({ components: CAMERA_ABILITIES })
   for (let i=0; i < ENTITIES; i++) {
     level.createEntity({ components: ENEMY_ABILITIES })  
   }
   
-  let entityRecord = Query.find(level, CAMERA_ABILITIES)
-  const cam = entityRecord.components.get(Follows)
-  cam.entity = player
-  cam.w = canvas.width
-  cam.h = canvas.height
+  CameraSystem.setup(level, player, canvas.width, canvas.height)
   
-  entityRecord = Query.find(level, PLAYER_ABILITIES)
+  let entityRecord = Query.find(level, PLAYER_ABILITIES)
   const obj = entityRecord.components.get(Position)
   obj.vector = new Vector2(-100, -100)
 }
