@@ -65,6 +65,8 @@ let level = null
 const PLAYER_ABILITIES = [Force, Health, Mass, Position, Rotation, ScreenPosition, TakesInput, Velocity]
 const CAMERA_ABILITIES = [Follows, ScreenPosition]
 const ENEMY_ABILITIES = [Force, Health, Mass, Position, Rotation, ScreenPosition, Velocity]
+const VULCAN_ABILITIES = [Force, Health, Position, ScreenPosition, Velocity]
+const MISSILE_ABILITIES = [Force, Health, Mass, Position, Rotation, ScreenPosition, Velocity]
 
 function setup() {
   inputManager.setup()
@@ -84,8 +86,6 @@ function setup() {
   for (let i=0; i < ENTITIES; i++) {
     level.createEntity({ components: ENEMY_ABILITIES })  
   }
-  console.log('setup')
-  console.log('---')
   
   let entityRecords = Query.findEntitiesIn(level, CAMERA_ABILITIES)
   const cam = entityRecords[0].components.get(Follows)
@@ -141,6 +141,30 @@ function drawTriangle(ctx, centerX, centerY, angle) {
   ctx.closePath()
   ctx.strokeStyle = '#EEEEEE'
   ctx.stroke()
+}
+function drawVulcan(ctx, x, y) {
+  ctx.fillStyle = '#FFFFFF'
+  ctx.fillRect(x, y, 3, 3)
+}
+function drawMissile(ctx, centerX, centerY, angle) {
+  const cosTheta = Math.cos(angle)
+  const sinTheta = Math.sin(angle)
+  const p0 = { x: 0, y: -6 } // Tip (relative to center)
+  const p1 = { x: -3, y: 3 }  // Left-ish point
+  const p2 = { x: 3, y: 3 }   // Right-ish point
+  const vertices = [p0, p1, p2]
+  ctx.beginPath()
+  
+  // Iterate through the vertices, rotate them, and move them to the correct position (centerX, centerY)
+  for (let i = 0; i < vertices.length; i++) {
+    const p = vertices[i]
+    const rotatedX = p.x * cosTheta - p.y * sinTheta
+    const rotatedY = p.x * sinTheta + p.y * cosTheta
+    // Final position: Rotated position + Center position
+    const finalX = rotatedX + centerX
+    const finalY = rotatedY + centerY
+    i === 0 ? ctx.moveTo(finalX, finalY) : ctx.lineTo(finalX, finalY)
+  } 
 }
 function drawBg(ctx, x, y) {
   ctx.fillStyle = '#DDDDDD'
