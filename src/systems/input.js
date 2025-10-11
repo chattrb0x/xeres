@@ -1,4 +1,4 @@
-import { Force } from '../component.js'
+import { Force, Rotation } from '../component.js'
 import { Query } from '../query.js'
 import { Vector2 } from '../vector.js'
 
@@ -44,12 +44,14 @@ const inputManager = new InputManager()
 
 class InputSystem {
   static update(level, dt) {
-    const entityRecords = Query.findEntitiesIn(level, [Force])
+    const entityRecords = Query.findEntitiesIn(level, [Force, Rotation])
     if (!entityRecords?.length) return
-    const moveStrength = 0.001
+    const moveStrength = 0.0005
+    const rotationStrength = 0.1
     entityRecords.forEach(entity => {
         const { components } = entity
         const entityForce = components.get(Force)
+        const entityRotation = components.get(Rotation)
         if (inputManager.getKeyDown("ArrowLeft")) {
             entityForce.vector.add(new Vector2(-moveStrength, 0))
         }
@@ -62,6 +64,13 @@ class InputSystem {
         }
         if (inputManager.getKeyDown("ArrowDown")) {
             entityForce.vector.add(new Vector2(0, moveStrength))
+        } 
+        if (inputManager.getKeyDown("KeyQ")) {
+            entityRotation.angle += rotationStrength
+        } 
+        // TODO: Why does 'KeyD' not work?
+        if (inputManager.getKeyDown("KeyE")) {
+            entityRotation.angle -= rotationStrength
         } 
     })
   }
