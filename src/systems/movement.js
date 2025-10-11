@@ -1,4 +1,4 @@
-import { Position, Velocity, Mass, Force } from '../component.js'
+import { Position, ScreenPosition, Velocity, Mass, Force } from '../component.js'
 import { Query } from '../query.js'
 import { Vector2 } from '../vector.js'
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../screen.js'
@@ -26,6 +26,7 @@ class Physics {
     for (const body of bodies) {
       if (body.mass <= 0) continue // skip immovable bodies
       const pos = body.components.get(Position)
+      const screen = body.components.get(ScreenPosition)
       const vel = body.components.get(Velocity)
       const mass = body.components.get(Mass)
       const force = body.components.get(Force)
@@ -38,9 +39,9 @@ class Physics {
       
       // TODO: break out to its own system
       // Track screen position
-      pos.x = pos.vector.x % SCREEN_WIDTH
-      pos.y = pos.vector.y % SCREEN_HEIGHT
-      pos.screenIndex = getScreenIndex(pos.vector)
+      screen.x = pos.vector.x % SCREEN_WIDTH
+      screen.y = pos.vector.y % SCREEN_HEIGHT
+      screen.screenIndex = getScreenIndex(pos.vector)
     }
   }
 }
@@ -50,7 +51,7 @@ class MovementSystem {
   static update(level, dt) {
     // TODO: Pass in the physics to apply
     const physics = new Physics()
-    const bodies = Query.findEntitiesIn(level, [Force, Mass, Position, Velocity])
+    const bodies = Query.findEntitiesIn(level, [Force, Mass, Position, ScreenPosition, Velocity])
     physics.update(bodies, dt)
   }
 }

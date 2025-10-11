@@ -9,6 +9,14 @@ class Health extends Component {
   }
 }
 class TakesInput extends Component {}
+class ScreenPosition extends Component {
+  constructor() {
+    super()
+    this.x = 0 
+    this.y = 0
+    this.screenIndex = 0
+  }
+}
 class Position extends Component {
   constructor(v = new Vector2(0, 0)) {
     super()
@@ -64,6 +72,7 @@ class Follows extends Component {
 export {
   BackgroundLayer,
   Rotation,
+  ScreenPosition,
   TakesInput,
   Position,
   Health,

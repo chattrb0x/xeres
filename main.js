@@ -1,6 +1,6 @@
 import { Query } from './src/query.js'
 import { Level } from './src/level.js'
-import { BackgroundLayer, Follows, Health, Rotation, TakesInput, Velocity, Position, Mass, Force } from './src/component.js'
+import { BackgroundLayer, Follows, Health, Rotation, ScreenPosition, TakesInput, Velocity, Position, Mass, Force } from './src/component.js'
 import { MovementSystem } from './src/systems/movement.js'
 import { RotationSystem } from './src/systems/rotation.js'
 import { LayerSystem } from './src/systems/layer.js'
@@ -62,9 +62,9 @@ let lastTime = 0
 let level = null
 
 // Entity Archetypes
-const PLAYER_ABILITIES = [Force, Health, Mass, Position, Rotation, TakesInput, Velocity]
-const CAMERA_ABILITIES = [Follows, Position]
-const ENEMY_ABILITIES = [Force, Health, Mass, Position, Rotation, Velocity]
+const PLAYER_ABILITIES = [Force, Health, Mass, Position, Rotation, ScreenPosition, TakesInput, Velocity]
+const CAMERA_ABILITIES = [Follows, ScreenPosition]
+const ENEMY_ABILITIES = [Force, Health, Mass, Position, Rotation, ScreenPosition, Velocity]
 
 function setup() {
   inputManager.setup()
@@ -150,9 +150,9 @@ function onRender() {
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   ctx.save()
   
-  const cameras = Query.findEntitiesIn(level, [Follows, Position])
+  const cameras = Query.findEntitiesIn(level, [Follows, ScreenPosition])
   const camera = cameras[0]
-  const camPos = camera.components.get(Position)
+  const camPos = camera.components.get(ScreenPosition)
   ctx.translate(-camPos.x, -camPos.y)
 
   const bg = Query.findEntitiesIn(level, [BackgroundLayer, Position])
