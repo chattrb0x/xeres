@@ -33,7 +33,7 @@ class Velocity extends Component {
 class Rotation extends Component {
   constructor() {
     super()
-    this.angle = 0
+    this.angle = 90
     this.rotationSpeed = 0
   }
 }

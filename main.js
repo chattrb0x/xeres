@@ -24,10 +24,10 @@ let lastTime = 0
 let level = null
 
 // Entity Archetypes
-const PLAYER_ABILITIES = [Force, Health, Mass, Position, Rotation, ScreenPosition, TakesInput, Velocity]
-const CAMERA_ABILITIES = [Follows, ScreenPosition]
-const VULCAN_ABILITIES = [Force, Health, Position, ScreenPosition, Velocity]
-const MISSILE_ABILITIES = [Force, Health, Mass, Position, Rotation, ScreenPosition, Velocity]
+const PLAYER_ABILITIES = [new Force(), new Health(1000), new Mass(), new Position(new Vector2(100, 100)), new Rotation(), new ScreenPosition(), new TakesInput(), new Velocity()]
+const CAMERA_ABILITIES = [new Follows(), new ScreenPosition()]
+const VULCAN_ABILITIES = [new Force(), new Health(1000), new Position(), new ScreenPosition(), new Velocity()]
+const MISSILE_ABILITIES = [new Force(), new Health(100), new Mass(), new Position(), new Rotation(), new ScreenPosition(), new Velocity()]
 
 function setup() {
   lastTime = performance.now()
@@ -37,20 +37,13 @@ function setup() {
   // Background grid
   const cols = 64
   const rows = 36
-  for(let g = 0; g < cols * rows; g++) level.createEntityByType({ components: [Position, BackgroundLayer] })
+  for(let g = 0; g < cols * rows; g++) level.createEntity([new Position(), new BackgroundLayer()])
   LayerSystem.setup(level)
   
-  const player = level.createEntityByType({ components: PLAYER_ABILITIES })
-  level.createEntityByType({ components: CAMERA_ABILITIES })
-  for (let i=0; i < ENTITIES; i++) {
-    level.createEntityByType({ components: ENEMY_ABILITIES })  
-  }
+  const player = level.createEntity(PLAYER_ABILITIES)
+  level.createEntity(CAMERA_ABILITIES)
   
   CameraSystem.setup(level, player, canvas.width, canvas.height)
-  
-  let entityRecord = Query.find(level, PLAYER_ABILITIES)
-  const position = entityRecord.components.get(Position)
-  position.vector = new Vector2(-100, -100)
 }
 
 
@@ -144,7 +137,7 @@ function onRender() {
   // Query player position for rendering 
   const entityRecords = Query.findAll(level, [Position, Rotation])
   if (!entityRecords?.length) return
-  // console.log(entityRecords.length)
+  console.log(entityRecords.length)
   entityRecords.forEach(entity => {
     const { components } = entity
     const pos = components.get(Position)

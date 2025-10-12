@@ -2,30 +2,20 @@ import { Health, Rotation, ScreenPosition, Velocity, Position, Mass, Force } fro
 import { Query } from '../query.js'
 import { Vector2 } from '../vector.js'
 
-const ENEMY_ABILITIES = [Force, Health, Mass, Position, Rotation, ScreenPosition, Velocity]
-
-function makeEnemyArchitype(
-    forceVector = new Vector2(0, 0),
-    health=1000,
-    mass=0,
-    positionVector = new Vector2(-120, -120),
-    velocityVector = new Vector2(0, 0),
-) {
-    let componentMap = new Map()
-    componentMap.set(Force, new Force(forceVector))
-    componentMap.set(Health, new Health(health))
-    componentMap.set(Mass, new Mass(mass))
-    componentMap.set(Position, new Position(positionVector))
-    componentMap.set(ScreenPosition, new ScreenPosition())
-    componentMap.set(Velocity, new Velocity(velocityVector))
-
-    return componentMap
-}
+const ENEMY_ABILITIES = [
+    new Force(new Vector2(0, 0)), 
+    new Health(1000), 
+    new Mass(0), 
+    new Position(new Vector2(100, Math.random() * 100)), 
+    new Rotation(), 
+    new ScreenPosition(), 
+    new Velocity(new Vector2(0, 0))
+]
 
 class EnemySpawnerSystem {
   static update(level, dt) {
-    if (level.nextEntityId < 3000) {
-        level.createEntity(makeEnemyArchitype())
+    if (level.nextEntityId < 2400) {
+        level.createEntity(ENEMY_ABILITIES)
     }
   }
 }
