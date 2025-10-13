@@ -66,10 +66,12 @@ class Follows extends Component {
   }
 }
 class MissileFired extends Component {
-  constructor(startX=0, startY=0, fireAngle=0) {
+  constructor(startX=0, startY=0, startVx=0, startVy=0, fireAngle=0) {
     super()
     this.startX = startX
     this.startY = startY
+    this.startVx = startVx
+    this.startVy = startVy
     this.fireAngle = fireAngle
     this.fired = false
   }

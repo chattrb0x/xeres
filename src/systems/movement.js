@@ -9,6 +9,8 @@ function getScreenIndex({ x, y }, perRow = 4) {
   return (rowIndex * perRow) + colIndex
 }
 
+const MAX_SPEED = 0.45
+
 class Physics {
   applyForces(bodies) {
     for (const body of bodies) {
@@ -34,9 +36,10 @@ class Physics {
       
       // TODO: Cap magnitude of velocity at max speed
       vel.vector.add(acceleration.clone().scale(dt))
-      // const speed = sqrt(vel.vector.x*vel.vector.x + vel.vector.y*vel.vector.y)
-      // if speed > maxSpeed 
-      // vel.vector.scale(maxSpeed / speed)
+      const speed = Math.sqrt(vel.vector.x*vel.vector.x + vel.vector.y*vel.vector.y)
+      if (speed > MAX_SPEED) {
+        vel.vector.scale(MAX_SPEED / speed)
+      }
       
       pos.vector.add(vel.vector.clone().scale(dt))
       force.vector = new Vector2(0, 0)
