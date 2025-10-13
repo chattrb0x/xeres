@@ -27,10 +27,6 @@ class MissileSpawnerSystem {
                     missileData.push(new Position(new Vector2(firedFlag.startX, firedFlag.startY)))
                 } 
                 else if (MISSILE_ABILITIES[i] instanceof Velocity) {
-                    // const missileSpeed = Math.sqrt(
-                    //     MISSILE_ABILITIES[i].vector.x*MISSILE_ABILITIES[i].vector.x
-                    //     + MISSILE_ABILITIES[i].vector.y*MISSILE_ABILITIES[i].vector.y
-                    // )
                     console.log(firedFlag.fireAngle)
                     const v = MISSILE_ABILITIES[i].vector
                     const rotatedX = v.x * Math.cos(firedFlag.fireAngle) - v.y * Math.sin(firedFlag.fireAngle)
