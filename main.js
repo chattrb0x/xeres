@@ -1,13 +1,16 @@
 import { Query } from './src/query.js'
 import { Level } from './src/level.js'
-import { BackgroundLayer, Follows, Health, Rotation, ScreenPosition, TakesInput, Velocity, Position, Mass, Force } from './src/component.js'
+import { BackgroundLayer, Follows, Health, Rotation, ScreenPosition, TakesInput, Velocity, Position, Mass, Force, MissileFired } from './src/component.js'
 import { MovementSystem } from './src/systems/movement.js'
 import { RotationSystem } from './src/systems/rotation.js'
 import { LayerSystem } from './src/systems/layer.js'
 import { CameraSystem } from './src/systems/camera.js'
 import { InputSystem } from './src/systems/input.js'
-import { ENEMY_ABILITIES, EnemySpawnerSystem } from './src/systems/spawner.js'
+import { ENEMY_ABILITIES, EnemySpawnerSystem } from './src/systems/enemySpawner.js'
 import { Vector2 } from './src/vector.js'
+import { MISSILE_ABILITIES, MissileSpawnerSystem } from './src/systems/missileSpawner.js'
+import { PLAYER_ABILITIES  } from './src/player.js'
+
 
 // Setup main canvas
 const canvas = document.querySelector('canvas')
@@ -19,15 +22,18 @@ const FPS = 60
 const FIXED_UPDATE_STEP_MS = 1000 / FPS
 const ENTITIES = 300
 
+// TODO: This is probably bad, 
+// but needed to get the character not in the top-left corner
+const SCREEN_CENTER_OFFSET_X = 100
+const SCREEN_CENTER_OFFSET_Y = 100
+
 let accumulator = 0
 let lastTime = 0
 let level = null
 
 // Entity Archetypes
-const PLAYER_ABILITIES = [new Force(), new Health(1000), new Mass(), new Position(new Vector2(100, 100)), new Rotation(), new ScreenPosition(), new TakesInput(), new Velocity()]
 const CAMERA_ABILITIES = [new Follows(), new ScreenPosition()]
 const VULCAN_ABILITIES = [new Force(), new Health(1000), new Position(), new ScreenPosition(), new Velocity()]
-const MISSILE_ABILITIES = [new Force(), new Health(100), new Mass(), new Position(), new Rotation(), new ScreenPosition(), new Velocity()]
 
 function setup() {
   lastTime = performance.now()
@@ -52,6 +58,7 @@ function onUpdate(level, dt) {
 
   RotationSystem.update(level, dt)
   MovementSystem.update(level, dt)
+  MissileSpawnerSystem.update(level, dt)
   EnemySpawnerSystem.update(level, dt)
 
   // Moves camera based on player pos so must come last
@@ -137,15 +144,40 @@ function onRender() {
   // Query player position for rendering 
   const entityRecords = Query.findAll(level, [Position, Rotation])
   if (!entityRecords?.length) return
-  console.log(entityRecords.length)
+  // console.log(entityRecords.length)
   entityRecords.forEach(entity => {
     const { components } = entity
     const pos = components.get(Position)
     const rot = components.get(Rotation)
-    // console.log(`Player position: (${pos.x.toFixed(1)}, ${pos.y.toFixed(1)})`)
-    drawTriangle(ctx, pos.vector.x, pos.vector.y, rot.angle) 
+    // console.log(`Player position: (${pos.vector.x}, ${pos.vector.y})`)
+    drawTriangle(
+      ctx,
+      // TODO: Make the player coordinate the center of the screen.
+      // Currently it's the topleft corner 
+      pos.vector.x + SCREEN_CENTER_OFFSET_X,
+      pos.vector.y + SCREEN_CENTER_OFFSET_Y,
+      rot.angle
+    ) 
   })
   
+  // Query player position for rendering 
+  const missileRecords = Query.findAll(level, MISSILE_ABILITIES)
+  // console.log(entityRecords.length)
+  missileRecords.forEach(entity => {
+    const { components } = entity
+    const pos = components.get(Position)
+    const rot = components.get(Rotation)
+    // console.log(`Player position: (${pos.vector.x}, ${pos.vector.y})`)
+    drawMissile(
+      ctx,
+      // TODO: Make the player coordinate the center of the screen.
+      // Currently it's the topleft corner 
+      pos.vector.x + SCREEN_CENTER_OFFSET_X,
+      pos.vector.y + SCREEN_CENTER_OFFSET_Y,
+      rot.angle
+    ) 
+  })
+
   ctx.restore()
 }
 

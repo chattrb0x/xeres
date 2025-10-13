@@ -1,7 +1,6 @@
-import { Force, Rotation } from '../component.js'
 import { Query } from '../query.js'
 import { Vector2 } from '../vector.js'
-
+import { Force, Rotation, MissileFired, Position } from '../component.js'
 
 class InputManager {
   constructor() {
@@ -44,7 +43,8 @@ const inputManager = new InputManager()
 
 class InputSystem {
   static update(level, dt) {
-    const entityRecords = Query.findAll(level, [Force, Rotation])
+    // TODO: Just the player and not everything with force and rotation? 
+    const entityRecords = Query.findAll(level, [Position, Force, Rotation, MissileFired])
     if (!entityRecords?.length) return
     const moveStrength = 0.0005
     const rotationStrength = 0.1
@@ -52,13 +52,15 @@ class InputSystem {
         const { components } = entity
         const entityForce = components.get(Force)
         const entityRotation = components.get(Rotation)
+        const entityMissile = components.get(MissileFired)
+        const entityPosition = components.get(Position)
         if (inputManager.getKeyDown("ArrowLeft")) {
             entityForce.vector.add(new Vector2(-moveStrength, 0))
         }
         if (inputManager.getKeyDown("ArrowRight")) {
             entityForce.vector.add(new Vector2(moveStrength, 0))
         }
-        if (inputManager.getKeyDown("Space") || inputManager.getKeyDown("ArrowUp")) {
+        if (inputManager.getKeyDown("ArrowUp")) {
             // -1 for up because of canvas flipped y?  
             entityForce.vector.add(new Vector2(0, -moveStrength))
         }
@@ -71,7 +73,14 @@ class InputSystem {
         // TODO: Why does 'KeyD' not work?
         if (inputManager.getKeyDown("KeyE")) {
             entityRotation.angle -= rotationStrength
-        } 
+        }
+        if (inputManager.getKeyDown("Space")) {
+          console.log("Space pressed")  
+          entityMissile.fired = true
+          entityMissile.startX = entityPosition.vector.x
+          entityMissile.startY = entityPosition.vector.y
+          entityMissile.fireAngle = entityRotation.angle
+        }  
     })
   }
 }

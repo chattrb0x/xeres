@@ -33,7 +33,7 @@ class Velocity extends Component {
 class Rotation extends Component {
   constructor() {
     super()
-    this.angle = 90
+    this.angle = Math.PI / 2
     this.rotationSpeed = 0
   }
 }
@@ -65,6 +65,15 @@ class Follows extends Component {
     this.h = h
   }
 }
+class MissileFired extends Component {
+  constructor(startX=0, startY=0, fireAngle=0) {
+    super()
+    this.startX = startX
+    this.startY = startY
+    this.fireAngle = fireAngle
+    this.fired = false
+  }
+}
 
 export {
   BackgroundLayer,
@@ -78,4 +87,5 @@ export {
   Mass,
   Force,
   Follows,
+  MissileFired
 }
