@@ -11,7 +11,6 @@ function getScreenIndex({ x, y }, perRow = 4) {
 
 class Physics {
   applyForces(bodies) {
-    // TODO: Do something fancier than just downward gravity.
     for (const body of bodies) {
       const force = body.components.get(Force)
       const mass = body.components.get(Mass)
@@ -32,7 +31,13 @@ class Physics {
       const force = body.components.get(Force)
       // console.log("@@@@ Starting Values", pos, vel, mass, force)
       const acceleration = force.vector.clone().scale(1 / mass.mass)
+      
+      // TODO: Cap magnitude of velocity at max speed
       vel.vector.add(acceleration.clone().scale(dt))
+      // const speed = sqrt(vel.vector.x*vel.vector.x + vel.vector.y*vel.vector.y)
+      // if speed > maxSpeed 
+      // vel.vector.scale(maxSpeed / speed)
+      
       pos.vector.add(vel.vector.clone().scale(dt))
       force.vector = new Vector2(0, 0)
       // console.log("@@@@ After Update", pos, vel, mass, force)
