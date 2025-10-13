@@ -1,6 +1,6 @@
 import { Query } from '../query.js'
 import { Vector2 } from '../vector.js'
-import { Force, Rotation, MissileFired, Position } from '../component.js'
+import { Force, Rotation, MissileFired, Position, Velocity } from '../component.js'
 
 class InputManager {
   constructor() {
@@ -44,7 +44,7 @@ const inputManager = new InputManager()
 class InputSystem {
   static update(level, dt) {
     // TODO: Just the player and not everything with force and rotation? 
-    const entityRecords = Query.findAll(level, [Position, Force, Rotation, MissileFired])
+    const entityRecords = Query.findAll(level, [Position, Force, Rotation, MissileFired, Velocity])
     if (!entityRecords?.length) return
     const moveStrength = 0.0005
     const rotationStrength = 0.1
@@ -54,6 +54,7 @@ class InputSystem {
         const entityRotation = components.get(Rotation)
         const entityMissile = components.get(MissileFired)
         const entityPosition = components.get(Position)
+        const entityVelocity = components.get(Velocity)
         if (inputManager.getKeyDown("ArrowLeft")) {
             entityForce.vector.add(new Vector2(-moveStrength, 0))
         }
@@ -75,11 +76,12 @@ class InputSystem {
             entityRotation.angle -= rotationStrength
         }
         if (inputManager.getKeyDown("Space")) {
-          console.log("Space pressed")  
           entityMissile.fired = true
           entityMissile.startX = entityPosition.vector.x
           entityMissile.startY = entityPosition.vector.y
           entityMissile.fireAngle = entityRotation.angle
+          entityMissile.startVx = entityVelocity.vector.x
+          entityMissile.startVy = entityVelocity.vector.y
         }  
     })
   }

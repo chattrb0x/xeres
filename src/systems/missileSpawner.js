@@ -8,7 +8,7 @@ const MISSILE_ABILITIES = [
     new Mass(),
     new Rotation(),
     new ScreenPosition(),
-    new Velocity(new Vector2(0, -0.2)),
+    new Velocity(new Vector2(0, -1)),
     new Position(),
 ]
 
@@ -27,15 +27,15 @@ class MissileSpawnerSystem {
                     missileData.push(new Position(new Vector2(firedFlag.startX, firedFlag.startY)))
                 } 
                 else if (MISSILE_ABILITIES[i] instanceof Velocity) {
-                    console.log(firedFlag.fireAngle)
                     const v = MISSILE_ABILITIES[i].vector
+                    console.log(firedFlag)
                     const rotatedX = v.x * Math.cos(firedFlag.fireAngle) - v.y * Math.sin(firedFlag.fireAngle)
                     const rotatedY = v.x * Math.sin(firedFlag.fireAngle) + v.y * Math.cos(firedFlag.fireAngle)
                     missileData.push(
                         new Velocity(
                             new Vector2(
-                                rotatedX,
-                                rotatedY,   
+                                rotatedX + firedFlag.startVx,
+                                rotatedY + firedFlag.startVy,   
                             )
                         )
                     )
@@ -43,9 +43,7 @@ class MissileSpawnerSystem {
                     missileData.push(MISSILE_ABILITIES[i])
                 }
             }
-            console.log(missileData) 
             level.createEntity(missileData)
-            console.log("Missile Spawned")
         }
         
         firedFlag.fired = false
