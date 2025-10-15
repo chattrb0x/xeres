@@ -1,5 +1,6 @@
 import { Query } from './src/query.js'
 import { Level } from './src/level.js'
+import { mortonEncode, mortonDecode } from './src/morton.js'
 import { BackgroundLayer, Follows, Health, Rotation, ScreenPosition, TakesInput, Velocity, Position, Mass, Force, MissileFired } from './src/component.js'
 import { MovementSystem } from './src/systems/movement.js'
 import { RotationSystem } from './src/systems/rotation.js'
@@ -196,6 +197,26 @@ function loop(currentTime) {
   onRender()
   window.requestAnimationFrame(loop)
 }
+
+
+
+// Example usage and testing
+console.log("Morton Encoding Examples (8-bit):");
+console.log("==================================");
+
+const testCases = [
+    { x: 0, y: 0 },
+    { x: 1, y: 1 },
+    { x: -1, y: -1 },
+    { x: 127, y: 127 },
+    { x: -127, y: -127 }
+]
+
+testCases.forEach(({ x, y }) => {
+   const encoded = mortonEncode(x, y);
+   const decoded = mortonDecode(encoded);
+    console.log(`(${x}, ${y}) -> 0x${encoded.toString(16).padStart(4, '0')} -> (${decoded.x}, ${decoded.y})`);
+})
 
 setup()
 loop(performance.now())
