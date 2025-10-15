@@ -16,6 +16,15 @@ class Vector2 {
     this.y *= s
     return this
   }
+  rotate(angle) {
+    const cosTheta = Math.cos(angle)
+    const sinTheta = Math.sin(angle)
+    const rotatedX = this.x * cosTheta - this.y * sinTheta
+    const rotatedY = this.x * sinTheta + this.y * cosTheta
+    this.x = rotatedX
+    this.y = rotatedY
+    return this
+  }
   clone() {
     return new Vector2(this.x, this.y)
   }

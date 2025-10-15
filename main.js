@@ -5,7 +5,7 @@ import { MovementSystem } from './src/systems/movement.js'
 import { RotationSystem } from './src/systems/rotation.js'
 import { LayerSystem } from './src/systems/layer.js'
 import { CameraSystem } from './src/systems/camera.js'
-import { InputSystem } from './src/systems/input.js'
+import { InputSystem, INPUT_MANAGER } from './src/systems/input.js'
 import { ENEMY_ABILITIES, EnemySpawnerSystem } from './src/systems/enemySpawner.js'
 import { Vector2 } from './src/vector.js'
 import { MISSILE_ABILITIES, MissileSpawnerSystem } from './src/systems/missileSpawner.js'
@@ -15,6 +15,8 @@ import { PLAYER_ABILITIES  } from './src/player.js'
 // Setup main canvas
 const canvas = document.querySelector('canvas')
 const ctx = canvas.getContext('2d')
+
+INPUT_MANAGER.setup(canvas)
 
 console.log('----------\n start \n ----------')
 
@@ -74,7 +76,6 @@ function drawTriangle(ctx, centerX, centerY, angle) {
   const p1 = { x: -5, y: 5 }  // Left-ish point
   const p2 = { x: 5, y: 5 }   // Right-ish point
   const vertices = [p0, p1, p2]
-  
   ctx.beginPath()
   
   // Iterate through the vertices, rotate them, and move them to the correct position (centerX, centerY)
