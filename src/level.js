@@ -55,7 +55,7 @@ class Level {
       const last = archetype.entityIds.pop()
       if (idx < archetype.entityIds.length) archetype.entityIds[idx] = last
     }
-    this.freeIds.push(entity.id);
+    this.freeIds.push(entity.id)
   }
   getComponent(entity, componentType) {
     const { archetype } = this.entityRecords.get(entity)
