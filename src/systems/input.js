@@ -104,7 +104,6 @@ class InputSystem {
           const dy = INPUT_MANAGER.clickCoord.y - 100;
           // Not sure why we need to add Pi/2 lol.
           entityRotation.angle = Math.atan2(dy,dx) + Math.PI / 2
-          console.log("New angle:", entityRotation.angle, INPUT_MANAGER.clickCoord.x, INPUT_MANAGER.clickCoord.y, entityPosition.vector.x, entityPosition.vector.y)
         }  
     })
     INPUT_MANAGER.endFrame()
