@@ -7,11 +7,42 @@ class InputManager {
     this.keysDown = new Set()
     this.keysPressed = new Set()
     this.keysReleased = new Set()
-    this.setup()
+    this.clickCoord = null
   }
-  setup() {
+  setup(canvas) {
     window.addEventListener('keydown', (e) => this.onKeyDown(e))
     window.addEventListener('keyup', (e) => this.onKeyUp(e))
+    // Setup click handling for canvas
+    canvas.addEventListener("click", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      this.clickCoord = new Vector2(mouseX, mouseY)
+    });
+    document.getElementById("forward").addEventListener("click", () => {
+      // Pretend we pushed `W`
+      const fastCode = "KeyW"
+      if (!this.keysDown.has(fastCode)) {
+        this.keysPressed.add(fastCode)
+      }
+      this.keysDown.add(fastCode)
+    })
+    document.getElementById("backward").addEventListener("click", () => {
+      // Pretend we pushed `S`
+      const slowCode = "KeyS"
+      if (!this.keysDown.has(slowCode)) {
+        this.keysPressed.add(slowCode)
+      }
+      this.keysDown.add(slowCode)
+    })
+    document.getElementById("fire").addEventListener("click", () => {
+      // Pretend we pushed `Space`
+      const fireCode = "Space"
+      if (!this.keysDown.has(fireCode)) {
+        this.keysPressed.add(fireCode)
+      }
+      this.keysDown.add(fireCode)
+    })
   }
   onKeyDown(e) {
     if (!this.keysDown.has(e.code)) {
@@ -36,18 +67,18 @@ class InputManager {
     this.keysPressed.clear()
     this.keysDown.clear()
     this.keysReleased.clear()
+    this.clickCoord = null
   }
 
 }
-const inputManager = new InputManager()
+const INPUT_MANAGER = new InputManager()
 
 class InputSystem {
   static update(level, dt) {
     // TODO: Just the player and not everything with force and rotation? 
     const entityRecords = Query.findAll(level, [Position, Force, Rotation, MissileFired, Velocity])
     if (!entityRecords?.length) return
-    const moveStrength = 0.0005
-    const rotationStrength = 0.1
+    const moveStrength = 0.001
     entityRecords.forEach(entity => {
         const { components } = entity
         const entityForce = components.get(Force)
@@ -55,36 +86,28 @@ class InputSystem {
         const entityMissile = components.get(MissileFired)
         const entityPosition = components.get(Position)
         const entityVelocity = components.get(Velocity)
-        if (inputManager.getKeyDown("ArrowLeft")) {
-            entityForce.vector.add(new Vector2(-moveStrength, 0))
-        }
-        if (inputManager.getKeyDown("ArrowRight")) {
-            entityForce.vector.add(new Vector2(moveStrength, 0))
-        }
-        if (inputManager.getKeyDown("ArrowUp")) {
-            // -1 for up because of canvas flipped y?  
-            entityForce.vector.add(new Vector2(0, -moveStrength))
-        }
-        if (inputManager.getKeyDown("ArrowDown")) {
-            entityForce.vector.add(new Vector2(0, moveStrength))
+        if (INPUT_MANAGER.getKeyDown("KeyW")) {
+            entityForce.vector.add(new Vector2(0, -moveStrength).rotate(entityRotation.angle))
         } 
-        if (inputManager.getKeyDown("KeyQ")) {
-            entityRotation.angle += rotationStrength
+        if (INPUT_MANAGER.getKeyDown("KeyS")) {
+            entityForce.vector.add(new Vector2(0, moveStrength).rotate(entityRotation.angle))
         } 
-        // TODO: Why does 'KeyD' not work?
-        if (inputManager.getKeyDown("KeyE")) {
-            entityRotation.angle -= rotationStrength
-        }
-        if (inputManager.getKeyDown("Space")) {
+        if (INPUT_MANAGER.getKeyDown("Space")) {
           entityMissile.fired = true
-          entityMissile.startX = entityPosition.vector.x
-          entityMissile.startY = entityPosition.vector.y
+          entityMissile.startPosition = entityPosition.vector.clone()
           entityMissile.fireAngle = entityRotation.angle
-          entityMissile.startVx = entityVelocity.vector.x
-          entityMissile.startVy = entityVelocity.vector.y
+          entityMissile.startVelocity = entityVelocity.vector.clone()
+        }
+        if (INPUT_MANAGER.clickCoord !== null) {
+          // TODO: Remove subtraction of -100 when we remove SCREEN_CENTER_OFFSET_X and SCREEN_CENTER_OFFSET_Y
+          const dx = INPUT_MANAGER.clickCoord.x - 100;
+          const dy = INPUT_MANAGER.clickCoord.y - 100;
+          // Not sure why we need to add Pi/2 lol.
+          entityRotation.angle = Math.atan2(dy,dx) + Math.PI / 2
         }  
     })
+    INPUT_MANAGER.endFrame()
   }
 }
 
-export { InputSystem }
+export { InputSystem, INPUT_MANAGER }
