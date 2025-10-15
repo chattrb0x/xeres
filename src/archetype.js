@@ -23,9 +23,6 @@ class Archetype {
     components.forEach(instance => {
       this.componentsByType.get(instance.constructor).push(instance)
     })
-    
-    // return the index of the entity
-    return this.entityIds.length - 1
   }
   // Explicitly request components
   entityComponents(entity, componentTypes) {

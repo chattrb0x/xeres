@@ -38,7 +38,7 @@ class Level {
       : this.nextEntityId++
     const entity = new Entity(id)
     
-    const index = archetype.add(entity, components)
+    archetype.add(entity, components)
     
     // store archetypes associated with an entity
     // use index to get components for a specific entity eg. archetype.componentMap.get(Position)[1] for entity in archetype.entities[1]
