@@ -34,7 +34,7 @@ class Physics {
       // console.log("@@@@ Starting Values", pos, vel, mass, force)
       const acceleration = force.vector.clone().scale(1 / mass.mass)
       
-      // TODO: Cap magnitude of velocity at max speed
+      // TODO: Give different types of entities different max speeds.
       vel.vector.add(acceleration.clone().scale(dt))
       const speed = Math.sqrt(vel.vector.x*vel.vector.x + vel.vector.y*vel.vector.y)
       if (speed > MAX_SPEED) {

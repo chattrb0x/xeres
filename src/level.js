@@ -4,9 +4,10 @@ import { Screen, SCREEN_WIDTH, SCREEN_HEIGHT } from './screen.js'
 
 class Level {
   constructor(size=16) {
-    this.nextEntityId = 1
+    this.nextEntityId = 1  // WARNING: Do not use this as an index
     this.archetypes = new Map()
     this.entityRecords = new Map()
+    this.freeIds = [] // Maintain a stack for recycling freed IDs when entities are destroyed.
     
     this.screens = []
     for(let i = 0; i < size; i++) {
@@ -31,20 +32,33 @@ class Level {
       archetype = this.attachArchetype(componentTypes)
     }
 
-    // Associate entity with an archetype for easy look-ip
-    const entity = new Entity(this.nextEntityId)
-    this.nextEntityId++
+    // Associate entity with an archetype for easy look-up
+    const id = this.freeIds.length > 0
+      ? this.freeIds.pop()
+      : this.nextEntityId++
+    const entity = new Entity(id)
     
     const index = archetype.add(entity, components)
     
     // store archetypes associated with an entity
     // use index to get components for a specific entity eg. archetype.componentMap.get(Position)[1] for entity in archetype.entities[1]
-    this.entityRecords.set(entity, { archetype, index })
-
+    this.entityRecords.set(entity, { archetype })
     return entity
   }
+  destroyEntity(entity){
+    const { archetype } = this.entityRecords.get(entity) 
+    this.entityRecords.delete(entity)
+    
+    // Remove from archetype entityIds with swap&pop.
+    const idx = archetype.entityIds.indexOf(entity.id)
+    if (idx !== -1) {
+      const last = archetype.entityIds.pop()
+      if (idx < archetype.entityIds.length) archetype.entityIds[idx] = last
+    }
+    this.freeIds.push(entity.id);
+  }
   getComponent(entity, componentType) {
-    const { archetype, index: entityIndex } = this.entityRecords.get(entity)
+    const { archetype } = this.entityRecords.get(entity)
     if (!archetype) return null
     return archetype.entityComponents(entity, [componentType]).get(componentType)
   }
