@@ -1,4 +1,4 @@
-import { Health, Rotation, ScreenPosition, Velocity, Position, Mass, Force, MissileFired } from '../component.js'
+import { Health, Rotation, ScreenPosition, Velocity, Position, Mass, Force, MissileFired, Timer } from '../component.js'
 import { Query } from '../query.js'
 import { Vector2 } from '../vector.js'
 
@@ -10,8 +10,10 @@ const MISSILE_ABILITIES = [
     new ScreenPosition(),
     new Velocity(new Vector2(0, -1)),
     new Position(),
+    new Timer(),
 ]
 
+const MISSLE_LIFE_TIME = 60
 
 class MissileSpawnerSystem {
   static update(level, dt) {
@@ -28,12 +30,20 @@ class MissileSpawnerSystem {
                     new ScreenPosition(),
                     new Velocity(new Vector2(0, -1).rotate(firedFlag.fireAngle).add(firedFlag.startVelocity)),
                     new Position(firedFlag.startPosition.clone()),
+                    new Timer(MISSLE_LIFE_TIME)
                 ]
             )
         }
         
         firedFlag.fired = false
-    })    
+    })
+    Query.findAll(level, [Timer])?.forEach(({ entity, components }) => {
+        const timer = components.get(Timer)
+        if (timer.time > timer.lifeTime) {
+            level.destroyEntity(entity)
+        }
+        timer.time += 1
+    })       
   }
 }
 

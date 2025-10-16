@@ -65,6 +65,13 @@ class Follows extends Component {
     this.h = h
   }
 }
+class Timer extends Component {
+  constructor(lifeTime=1, time=0) {
+    super()
+    this.lifeTime = lifeTime
+    this.time = time
+  }
+}
 class MissileFired extends Component {
   constructor(startPosition=new Vector2(0, 0), startVelocity=new Vector2(0, 0), fireAngle=0) {
     super()
@@ -87,5 +94,6 @@ export {
   Mass,
   Force,
   Follows,
-  MissileFired
+  MissileFired,
+  Timer
 }
