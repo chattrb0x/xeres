@@ -2,6 +2,7 @@ import { Query } from '../query.js'
 import { Vector2 } from '../vector.js'
 import { Force, Rotation, MissileFired, Position, Velocity } from '../component.js'
 
+let touchActive = false
 class InputManager {
   constructor() {
     this.keysDown = new Set()
@@ -14,11 +15,30 @@ class InputManager {
     window.addEventListener('keyup', (e) => this.onKeyUp(e))
     // Setup click handling for canvas
     canvas.addEventListener("click", (e) => {
+      if(touchActive) return
       const rect = canvas.getBoundingClientRect();
       const mouseX = e.clientX - rect.left;
       const mouseY = e.clientY - rect.top;
       this.clickCoord = new Vector2(mouseX, mouseY)
-    });
+    })
+    canvas.addEventListener("touchstart", e => {
+      touchActive = true
+      const touches = e.changedTouches
+      const rect = canvas.getBoundingClientRect()
+      const x = touches[0].clientX - rect.left
+      const y = touches[0].clientY - rect.top
+      this.clickCoord = new Vector2(x, y)
+    })
+    canvas.addEventListener("touchend", e => { touchActive = false })
+    canvas.addEventListener("touchmove", e => {
+      if(!touchActive) return
+      const touches = e.changedTouches
+      const rect = canvas.getBoundingClientRect()
+      const x = touches[0].clientX - rect.left
+      const y = touches[0].clientY - rect.top
+      this.clickCoord = new Vector2(x, y) 
+    })
+    
     document.getElementById("forward").addEventListener("click", () => {
       // Pretend we pushed `W`
       const fastCode = "KeyW"
