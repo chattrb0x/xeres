@@ -14,9 +14,9 @@ const ENEMY_ABILITIES = [
 
 class EnemySpawnerSystem {
   static update(level, dt) {
-    if (level.nextEntityId < 2400) {
-        level.createEntity(ENEMY_ABILITIES)
-    }
+    // if (level.nextEntityId < 2400) {
+    //     level.createEntity(ENEMY_ABILITIES)
+    // }
   }
 }
 

@@ -38,27 +38,21 @@ class Level {
       : this.nextEntityId++
     const entity = new Entity(id)
     
-    archetype.add(entity, components)
-    
+    const index = archetype.add(entity, components)
+
     // store archetypes associated with an entity
     // use index to get components for a specific entity eg. archetype.componentMap.get(Position)[1] for entity in archetype.entities[1]
-    this.entityRecords.set(entity, { archetype })
+    this.entityRecords.set(entity, { archetype, index })
     return entity
   }
   destroyEntity(entity){
-    const { archetype } = this.entityRecords.get(entity) 
+    const { archetype, index } = this.entityRecords.get(entity) 
     this.entityRecords.delete(entity)
-    
-    // Remove from archetype entityIds with swap&pop.
-    const idx = archetype.entityIds.indexOf(entity.id)
-    if (idx !== -1) {
-      const last = archetype.entityIds.pop()
-      if (idx < archetype.entityIds.length) archetype.entityIds[idx] = last
-    }
+    archetype.removeEntity(index)
     this.freeIds.push(entity.id)
   }
   getComponent(entity, componentType) {
-    const { archetype } = this.entityRecords.get(entity)
+    const { archetype, index: entityIndex } = this.entityRecords.get(entity)
     if (!archetype) return null
     return archetype.entityComponents(entity, [componentType]).get(componentType)
   }
