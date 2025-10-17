@@ -13,7 +13,8 @@ const MISSILE_ABILITIES = [
     new Timer(),
 ]
 
-const MISSLE_LIFE_TIME = 60
+const MISSILE_LIFE_TIME = 60
+const MISSILE_SLOW_TIME = 20
 
 class MissileSpawnerSystem {
   static update(level, dt) {
@@ -28,19 +29,22 @@ class MissileSpawnerSystem {
                     new Mass(),
                     new Rotation(),
                     new ScreenPosition(),
-                    new Velocity(new Vector2(0, -1).rotate(firedFlag.fireAngle).add(firedFlag.startVelocity)),
+                    new Velocity(new Vector2(0, -0.1).rotate(firedFlag.fireAngle).add(firedFlag.startVelocity)),
                     new Position(firedFlag.startPosition.clone()),
-                    new Timer(MISSLE_LIFE_TIME)
+                    new Timer(MISSILE_LIFE_TIME)
                 ]
             )
         }
         
         firedFlag.fired = false
     })
-    Query.findAll(level, [Timer])?.forEach(({ entity, components }) => {
+    Query.findAll(level, [Timer, Velocity])?.forEach(({ entity, components }) => {
         const timer = components.get(Timer)
+        const velocity = components.get(Velocity)
         if (timer.time > timer.lifeTime) {
             level.destroyEntity(entity)
+        } else if (timer.time > MISSILE_SLOW_TIME) {
+            velocity.vector.scale(2)
         }
         timer.time += 1
     })       
