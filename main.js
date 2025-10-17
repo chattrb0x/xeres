@@ -1,7 +1,7 @@
 import { Query } from './src/query.js'
 import { Level } from './src/level.js'
 import { mortonEncode, mortonDecode } from './src/morton.js'
-import { BackgroundLayer, Follows, Health, Rotation, ScreenPosition, TakesInput, Velocity, Position, Mass, Force, MissileFired } from './src/component.js'
+import { BackgroundLayer, Follows, Health, Rotation, ScreenPosition, TakesInput, Timer, Velocity, Position, Mass, Force, MissileFired } from './src/component.js'
 import { MovementSystem } from './src/systems/movement.js'
 import { RotationSystem } from './src/systems/rotation.js'
 import { LayerSystem } from './src/systems/layer.js'
@@ -107,9 +107,10 @@ function drawVulcan(ctx, x, y) {
 function drawMissile(ctx, centerX, centerY, angle) {
   const cosTheta = Math.cos(angle)
   const sinTheta = Math.sin(angle)
-  const p0 = { x: 0, y: -6 } // Tip (relative to center)
-  const p1 = { x: -3, y: 3 }  // Left-ish point
-  const p2 = { x: 3, y: 3 }   // Right-ish point
+  
+  const p0 = { x: 0, y: -5 } // Tip (relative to center)
+  const p1 = { x: -2, y: 2 }  // Left-ish point
+  const p2 = { x: 2, y: 2 }   // Right-ish point
   const vertices = [p0, p1, p2]
   ctx.beginPath()
   
@@ -118,11 +119,21 @@ function drawMissile(ctx, centerX, centerY, angle) {
     const p = vertices[i]
     const rotatedX = p.x * cosTheta - p.y * sinTheta
     const rotatedY = p.x * sinTheta + p.y * cosTheta
+    
     // Final position: Rotated position + Center position
     const finalX = rotatedX + centerX
     const finalY = rotatedY + centerY
-    i === 0 ? ctx.moveTo(finalX, finalY) : ctx.lineTo(finalX, finalY)
-  } 
+    
+    if (i === 0) {
+      ctx.moveTo(finalX, finalY)
+    } else {
+      ctx.lineTo(finalX, finalY)
+    }
+  }
+
+  ctx.closePath()
+  ctx.strokeStyle = '#FF0000'
+  ctx.stroke()
 }
 function drawBg(ctx, x, y) {
   ctx.fillStyle = '#DDDDDD'
@@ -144,7 +155,7 @@ function onRender() {
   })
   
   // Query player position for rendering 
-  const entityRecords = Query.findAll(level, [Position, Rotation])
+  const entityRecords = Query.findAll(level, [TakesInput, Position, Rotation])
   if (!entityRecords?.length) return
   // console.log(entityRecords.length)
   entityRecords.forEach(entity => {
@@ -163,7 +174,7 @@ function onRender() {
   })
   
   // Query player position for rendering 
-  const missileRecords = Query.findAll(level, MISSILE_ABILITIES)
+  const missileRecords = Query.findAll(level, [Timer, Position, Rotation])
   // console.log(entityRecords.length)
   missileRecords.forEach(entity => {
     const { components } = entity
