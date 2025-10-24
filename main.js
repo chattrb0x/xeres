@@ -69,11 +69,11 @@ function onUpdate(level, dt) {
 }
 
 // TODO: remove
-function drawTriangle(ctx, centerX, centerY, angle) {
+function drawTriangle(ctx, centerX, centerY, angle, scale=1) {
   const cosTheta = Math.cos(angle)
   const sinTheta = Math.sin(angle)
   
-  const p0 = { x: 0, y: -11 } // Tip (relative to center)
+  const p0 = { x: 0, y: -11 * scale } // Tip (relative to center)
   const p1 = { x: -5, y: 5 }  // Left-ish point
   const p2 = { x: 5, y: 5 }   // Right-ish point
   const vertices = [p0, p1, p2]
@@ -187,7 +187,7 @@ function onRender() {
       // Currently it's the topleft corner 
       pos.vector.x + SCREEN_CENTER_OFFSET_X,
       pos.vector.y + SCREEN_CENTER_OFFSET_Y,
-      rot.angle
+      rot.angle, 0.3
     ) 
   }) 
   // Query player position for rendering 
