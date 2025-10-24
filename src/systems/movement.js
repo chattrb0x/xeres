@@ -50,7 +50,7 @@ const positiveMod = (n, m) => ((n % m) + m) % m
 function getWorldPos({ x, y }) {
   const gridX = Math.floor(x / GRID_TOTAL_WIDTH)
   const gridY = Math.floor(y / GRID_TOTAL_HEIGHT)
-  return `${[gridX, gridY].join('.')}`
+  return `${[gridX, gridY].join(':')}`
 }
 
 const MAX_SPEED = 0.45
@@ -93,6 +93,10 @@ class Physics {
       // Track screen position
       screen.x = positiveMod(pos.vector.x, SCREEN_WIDTH)
       screen.y = positiveMod(pos.vector.y, SCREEN_HEIGHT)
+      
+      if(getWorldPos(pos.vector) !== screen.worldPos) {
+        console.log(getWorldPos(pos.vector))
+      }
       screen.worldPos = getWorldPos(pos.vector)
       screen.screenIndex = getLocalScreenIndex(pos.vector)
     }

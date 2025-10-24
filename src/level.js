@@ -8,14 +8,6 @@ class Level {
     this.archetypes = new Map()
     this.entityRecords = new Map()
     this.freeIds = [] // Maintain a stack for recycling freed IDs when entities are destroyed.
-    
-    this.screenGroups = new Map()
-    
-    const screens = []
-    for(let i = 0; i < size; i++) {
-      screens.push(new Screen(SCREEN_WIDTH, SCREEN_HEIGHT, i))
-    }
-    this.screenGroups.set('0.0', screens)
   }
   hasArchetype(components) {
     const sig = Archetype.makeSignature(components)
