@@ -95,7 +95,7 @@ class Physics {
       screen.y = positiveMod(pos.vector.y, SCREEN_HEIGHT)
       
       if(getWorldPos(pos.vector) !== screen.worldPos) {
-        console.log(getWorldPos(pos.vector))
+        // console.log(getWorldPos(pos.vector))
       }
       screen.worldPos = getWorldPos(pos.vector)
       screen.screenIndex = getLocalScreenIndex(pos.vector)

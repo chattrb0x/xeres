@@ -13,8 +13,8 @@ const MISSILE_ABILITIES = [
     new Timer(),
 ]
 
-const MISSILE_LIFE_TIME = 60
-const MISSILE_SLOW_TIME = 20
+const MISSILE_LIFE_TIME = 600
+const MISSILE_SLOW_TIME = 30
 
 class MissileSpawnerSystem {
   static update(level, dt) {

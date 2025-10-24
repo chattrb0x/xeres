@@ -1,6 +1,5 @@
 import { Archetype } from './archetype.js'
 import { Entity } from './entity.js'
-import { Screen, SCREEN_WIDTH, SCREEN_HEIGHT } from './screen.js'
 
 class Level {
   constructor(size=16) {

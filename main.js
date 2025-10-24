@@ -1,7 +1,7 @@
 import { Query } from './src/query.js'
 import { Level } from './src/level.js'
 import { mortonEncode, mortonDecode } from './src/morton.js'
-import { BackgroundLayer, Follows, Health, Rotation, ScreenPosition, TakesInput, Timer, Velocity, Position, Mass, Force, MissileFired } from './src/component.js'
+import { BackgroundLayer, Enemy, Follows, Health, Rotation, ScreenPosition, TakesInput, Timer, Velocity, Position, Mass, Force, MissileFired } from './src/component.js'
 import { MovementSystem } from './src/systems/movement.js'
 import { RotationSystem } from './src/systems/rotation.js'
 import { LayerSystem } from './src/systems/layer.js'
@@ -155,7 +155,7 @@ function onRender() {
   })
   
   // Query player position for rendering 
-  const entityRecords = Query.findAll(level, [TakesInput, Position, Rotation])
+  let entityRecords = Query.findAll(level, [TakesInput, Position, Rotation])
   if (!entityRecords?.length) return
   // console.log(entityRecords.length)
   entityRecords.forEach(entity => {
@@ -172,7 +172,24 @@ function onRender() {
       rot.angle
     ) 
   })
-  
+  // Baddies
+  entityRecords = Query.findAll(level, [Enemy, Position, Rotation])
+  if (!entityRecords?.length) return
+  // console.log(entityRecords.length)
+  entityRecords.forEach(entity => {
+    const { components } = entity
+    const pos = components.get(Position)
+    const rot = components.get(Rotation)
+    // console.log(`Player position: (${pos.vector.x}, ${pos.vector.y})`)
+    drawTriangle(
+      ctx,
+      // TODO: Make the player coordinate the center of the screen.
+      // Currently it's the topleft corner 
+      pos.vector.x + SCREEN_CENTER_OFFSET_X,
+      pos.vector.y + SCREEN_CENTER_OFFSET_Y,
+      rot.angle
+    ) 
+  }) 
   // Query player position for rendering 
   const missileRecords = Query.findAll(level, [Timer, Position, Rotation])
   // console.log(entityRecords.length)

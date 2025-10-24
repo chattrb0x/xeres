@@ -2,6 +2,7 @@ import { Vector2 } from "./vector.js"
 
 class Component {}
 class BackgroundLayer extends Component {}
+class Enemy extends Component {}
 class Health extends Component {
   constructor(hp=1000) {
     super()
@@ -84,6 +85,7 @@ class MissileFired extends Component {
 
 export {
   BackgroundLayer,
+  Enemy,
   Rotation,
   ScreenPosition,
   TakesInput,
