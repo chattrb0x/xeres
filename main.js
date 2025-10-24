@@ -3,13 +3,13 @@ import { Level } from './src/level.js'
 import { mortonEncode, mortonDecode } from './src/morton.js'
 import { BackgroundLayer, Enemy, Follows, Health, Rotation, ScreenPosition, TakesInput, Timer, Velocity, Position, Mass, Force, MissileFired } from './src/component.js'
 import { MovementSystem } from './src/systems/movement.js'
+import { PhysicsSystem } from './src/systems/physics.js'
 import { RotationSystem } from './src/systems/rotation.js'
 import { LayerSystem } from './src/systems/layer.js'
 import { CameraSystem } from './src/systems/camera.js'
 import { InputSystem, INPUT_MANAGER } from './src/systems/input.js'
-import { ENEMY_ABILITIES, EnemySpawnerSystem } from './src/systems/enemySpawner.js'
-import { Vector2 } from './src/vector.js'
-import { MISSILE_ABILITIES, MissileSpawnerSystem } from './src/systems/missileSpawner.js'
+import { EnemySpawnerSystem } from './src/systems/enemySpawner.js'
+import { MissileSpawnerSystem } from './src/systems/missileSpawner.js'
 import { PLAYER_ABILITIES  } from './src/player.js'
 
 
@@ -23,7 +23,6 @@ console.log('----------\n start \n ----------')
 
 const FPS = 60
 const FIXED_UPDATE_STEP_MS = 1000 / FPS
-const ENTITIES = 300
 
 // TODO: This is probably bad, 
 // but needed to get the character not in the top-left corner
@@ -60,7 +59,9 @@ function onUpdate(level, dt) {
   InputSystem.update(level, dt)
 
   RotationSystem.update(level, dt)
+  PhysicsSystem.update(level, dt)
   MovementSystem.update(level, dt)
+  
   MissileSpawnerSystem.update(level, dt)
   EnemySpawnerSystem.update(level, dt)
 

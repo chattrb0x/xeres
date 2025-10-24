@@ -53,44 +53,16 @@ function getWorldPos({ x, y }) {
   return `${[gridX, gridY].join(':')}`
 }
 
-const MAX_SPEED = 0.45
 
-class Physics {
-  applyForces(bodies) {
+class MovementSystem {
+  static update(level, dt) {
+    const bodies = Query.findAll(level, [Position, ScreenPosition])
     for (const body of bodies) {
-      const force = body.components.get(Force)
-      const mass = body.components.get(Mass)
-      const gravity = new Vector2(0, 0) // new Vector2(0, 0.0001)
-      const gravityForce = gravity.clone().scale(mass.mass)
-      force.vector.add(gravityForce)  
-    }
-  }
-
-  update(bodies, dt) {
-    this.applyForces(bodies)
-    for (const body of bodies) {
-      if (body.mass <= 0) continue // skip immovable bodies
-      const pos = body.components.get(Position)
+      
       const screen = body.components.get(ScreenPosition)
-      const vel = body.components.get(Velocity)
-      const mass = body.components.get(Mass)
-      const force = body.components.get(Force)
-      // console.log("@@@@ Starting Values", pos, vel, mass, force)
-      const acceleration = force.vector.clone().scale(1 / mass.mass)
+      const pos = body.components.get(Position)
       
-      // TODO: Give different types of entities different max speeds.
-      vel.vector.add(acceleration.clone().scale(dt))
-      const speed = Math.sqrt(vel.vector.x*vel.vector.x + vel.vector.y*vel.vector.y)
-      if (speed > MAX_SPEED) {
-        vel.vector.scale(MAX_SPEED / speed)
-      }
-      
-      pos.vector.add(vel.vector.clone().scale(dt))
-      force.vector = new Vector2(0, 0)
-      // console.log("@@@@ After Update", pos, vel, mass, force)
-      
-      // TODO: break out to its own system
-      // Track screen position
+       // Track screen position
       screen.x = positiveMod(pos.vector.x, SCREEN_WIDTH)
       screen.y = positiveMod(pos.vector.y, SCREEN_HEIGHT)
       
@@ -99,17 +71,7 @@ class Physics {
       }
       screen.worldPos = getWorldPos(pos.vector)
       screen.screenIndex = getLocalScreenIndex(pos.vector)
-    }
-  }
-}
-
-
-class MovementSystem {
-  static update(level, dt) {
-    // TODO: Pass in the physics to apply
-    const physics = new Physics()
-    const bodies = Query.findAll(level, [Force, Mass, Position, ScreenPosition, Velocity])
-    physics.update(bodies, dt)
+    } 
   }
 }
 
