@@ -1,4 +1,4 @@
-import { Enemy, Health, Rotation, ScreenPosition, Velocity, Position, Mass, Force } from '../component.js'
+import { Enemy, Health, Rotation, ScreenPosition, Velocity, Position, Mass, Force, MissileFired } from '../component.js'
 import { Query } from '../query.js'
 import { Vector2 } from '../vector.js'
 const randomVector = (scaler) => new Vector2(
@@ -21,12 +21,14 @@ class EnemySpawnerSystem {
     if (count < 14) {
       level.createEntity([
         new Enemy(),
-        new Force(randomVector(0.001)), 
+        // new Force(randomVector(0.001)), 
+        new Force(new Vector2(0, 0)),
         new Mass(1), 
         new Position(randomVector(100)), 
         new Rotation(), 
         new ScreenPosition(), 
-        new Velocity(new Vector2(0, 0))
+        new Velocity(new Vector2(0, 0)),
+        new MissileFired(),
       ])
        count++
     }

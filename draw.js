@@ -19,7 +19,7 @@ function drawTriangle(ctx, centerX, centerY, angle, scale=1) {
     // Final position: Rotated position + Center position
     const finalX = rotatedX + centerX
     const finalY = rotatedY + centerY
-    
+
     if (i === 0) {
       ctx.moveTo(finalX, finalY)
     } else {

@@ -1,6 +1,6 @@
 import { Query } from '../query.js'
 import { Vector2 } from '../vector.js'
-import { Force, Rotation, MissileFired, Position, Velocity } from '../component.js'
+import { Force, Rotation, MissileFired, Position, Velocity, TakesInput } from '../component.js'
 
 let touchActive = false
 class InputManager {
@@ -96,7 +96,7 @@ const INPUT_MANAGER = new InputManager()
 class InputSystem {
   static update(level, dt) {
     // TODO: Just the player and not everything with force and rotation? 
-    const entityRecords = Query.findAll(level, [Position, Force, Rotation, MissileFired, Velocity])
+    const entityRecords = Query.findAll(level, [Position, Force, Rotation, MissileFired, Velocity, TakesInput])
     if (!entityRecords?.length) return
     const moveStrength = 0.001
     entityRecords.forEach(entity => {
@@ -120,10 +120,11 @@ class InputSystem {
         }
         if (INPUT_MANAGER.clickCoord !== null) {
           // TODO: Remove subtraction of -100 when we remove SCREEN_CENTER_OFFSET_X and SCREEN_CENTER_OFFSET_Y
-          const dx = INPUT_MANAGER.clickCoord.x - 100;
-          const dy = INPUT_MANAGER.clickCoord.y - 100;
+          const dx = INPUT_MANAGER.clickCoord.x - entityPosition.vector.x// - 100;
+          const dy = INPUT_MANAGER.clickCoord.y - entityPosition.vector.y// - 100;
           // Not sure why we need to add Pi/2 lol.
           entityRotation.angle = Math.atan2(dy,dx) + Math.PI / 2
+          console.log(entityRotation.angle)
         }  
     })
     INPUT_MANAGER.endFrame()

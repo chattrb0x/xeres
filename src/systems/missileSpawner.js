@@ -38,6 +38,9 @@ class MissileSpawnerSystem {
         
         firedFlag.fired = false
     })
+
+    // Destroy missiles after lifetime. 
+    // And speed up missiles after slow time. 
     Query.findAll(level, [Timer, Velocity])?.forEach(({ entity, components }) => {
         const timer = components.get(Timer)
         const velocity = components.get(Velocity)

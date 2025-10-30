@@ -25,6 +25,12 @@ class Vector2 {
     this.y = rotatedY
     return this
   }
+  magnitude(){
+    return Math.sqrt(this.x*this.x + this.y*this.y)
+  }
+  angle() {
+    return Math.atan(this.y / this.x) - Math.PI /2 
+  }
   clone() {
     return new Vector2(this.x, this.y)
   }
