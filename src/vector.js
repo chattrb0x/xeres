@@ -29,7 +29,14 @@ class Vector2 {
     return Math.sqrt(this.x*this.x + this.y*this.y)
   }
   angle() {
+    // Why subtract Pi / 2 ? 
     return Math.atan(this.y / this.x) - Math.PI /2 
+  }
+  dot(other) {
+    return this.x * other.x + this.y * other.y
+  }
+  angleBetween(other) {
+    return Math.acos(this.dot(other) / this.magnitude() / other.magnitude()) + Math.PI / 2
   }
   clone() {
     return new Vector2(this.x, this.y)

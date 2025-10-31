@@ -92,10 +92,8 @@ function onRender() {
     // console.log(`Player position: (${pos.vector.x}, ${pos.vector.y})`)
     drawTriangle(
       ctx,
-      // TODO: Make the player coordinate the center of the screen.
-      // Currently it's the topleft corner 
-      pos.vector.x,// + SCREEN_CENTER_OFFSET_X,
-      pos.vector.y,// + SCREEN_CENTER_OFFSET_Y,
+      pos.vector.x,
+      pos.vector.y,
       rot.angle
     ) 
   })
@@ -108,13 +106,10 @@ function onRender() {
     const pos = components.get(Position)
     const rot = components.get(Rotation)
     // console.log(`Player position: (${pos.vector.x}, ${pos.vector.y})`)
-    console.log(rot.angle)
     drawTriangle(
       ctx,
-      // TODO: Make the player coordinate the center of the screen.
-      // Currently it's the topleft corner 
-      pos.vector.x,// + SCREEN_CENTER_OFFSET_X,
-      pos.vector.y,// + SCREEN_CENTER_OFFSET_Y,
+      pos.vector.x,
+      pos.vector.y,
       rot.angle, 2
     ) 
   }) 
@@ -128,10 +123,8 @@ function onRender() {
     // console.log(`Player position: (${pos.vector.x}, ${pos.vector.y})`)
     drawMissile(
       ctx,
-      // TODO: Make the player coordinate the center of the screen.
-      // Currently it's the topleft corner 
-      pos.vector.x,// + SCREEN_CENTER_OFFSET_X,
-      pos.vector.y,// + SCREEN_CENTER_OFFSET_Y,
+      pos.vector.x,
+      pos.vector.y,
       rot.angle
     ) 
   })

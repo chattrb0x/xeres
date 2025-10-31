@@ -1,6 +1,7 @@
 import { Query } from '../query.js'
 import { Vector2 } from '../vector.js'
 import { Force, Rotation, MissileFired, Position, Velocity, TakesInput } from '../component.js'
+import {SCREEN_CENTER_OFFSET_X, SCREEN_CENTER_OFFSET_Y} from './camera.js'
 
 let touchActive = false
 class InputManager {
@@ -119,12 +120,11 @@ class InputSystem {
           entityMissile.startVelocity = entityVelocity.vector.clone()
         }
         if (INPUT_MANAGER.clickCoord !== null) {
-          // TODO: Remove subtraction of -100 when we remove SCREEN_CENTER_OFFSET_X and SCREEN_CENTER_OFFSET_Y
-          const dx = INPUT_MANAGER.clickCoord.x - entityPosition.vector.x// - 100;
-          const dy = INPUT_MANAGER.clickCoord.y - entityPosition.vector.y// - 100;
+          // This needs to take into account the screen offset since we're clicking in the camera space.
+          const dx = INPUT_MANAGER.clickCoord.x - SCREEN_CENTER_OFFSET_X;
+          const dy = INPUT_MANAGER.clickCoord.y - SCREEN_CENTER_OFFSET_Y;
           // Not sure why we need to add Pi/2 lol.
           entityRotation.angle = Math.atan2(dy,dx) + Math.PI / 2
-          console.log(entityRotation.angle)
         }  
     })
     INPUT_MANAGER.endFrame()

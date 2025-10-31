@@ -24,4 +24,4 @@ class CameraSystem {
   }
 }
 
-export { CameraSystem }
+export { CameraSystem, SCREEN_CENTER_OFFSET_X, SCREEN_CENTER_OFFSET_Y }
