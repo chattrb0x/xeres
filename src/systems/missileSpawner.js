@@ -15,13 +15,14 @@ const MISSILE_ABILITIES = [
 
 const MISSILE_LIFE_TIME = 600
 const MISSILE_SLOW_TIME = 30
+const MISSILE_FIRE_COOLDOWN = 20
 
 class MissileSpawnerSystem {
   static update(level, dt) {
     // TODO: Despawn or detonate missiles after a certain amount of time.
     Query.findAll(level, [MissileFired])?.forEach(({ components }) => {
         const firedFlag = components.get(MissileFired)
-        if (firedFlag.fired) {
+        if (firedFlag.fired && firedFlag.timeSinceLastFire > MISSILE_FIRE_COOLDOWN) {
             level.createEntity(
                 [
                     new Force(),
@@ -34,8 +35,9 @@ class MissileSpawnerSystem {
                     new Timer(MISSILE_LIFE_TIME)
                 ]
             )
+            firedFlag.timeSinceLastFire = 0
         }
-        
+        firedFlag.timeSinceLastFire += 1
         firedFlag.fired = false
     })
 

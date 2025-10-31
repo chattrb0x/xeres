@@ -80,6 +80,7 @@ class MissileFired extends Component {
     this.startVelocity = startVelocity
     this.fireAngle = fireAngle
     this.fired = false
+    this.timeSinceLastFire = 0
   }
 }
 
