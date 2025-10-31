@@ -17,8 +17,8 @@ const ENEMY_ABILITIES = [
 
 let count = 0
 class EnemySpawnerSystem {
-  static update(level, dt) {
-    if (count < 14) {
+  static setup(level) {
+    while (count < 14) {
       level.createEntity([
         new Enemy(),
         // new Force(randomVector(0.001)), 

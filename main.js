@@ -46,9 +46,10 @@ function setup() {
   const player = level.createEntity(PLAYER_ABILITIES)
   level.createEntity(CAMERA_ABILITIES)
   
+  EnemySpawnerSystem.setup(level)
+  
   CameraSystem.setup(level, player, canvas.width, canvas.height)
 }
-
 
 function onUpdate(level, dt) {
   InputSystem.update(level, dt)
@@ -60,7 +61,6 @@ function onUpdate(level, dt) {
   MovementSystem.update(level, dt)
   
   MissileSpawnerSystem.update(level, dt)
-  EnemySpawnerSystem.update(level, dt)
 
   // Moves camera based on player pos so must come last
   CameraSystem.update(level, dt)
