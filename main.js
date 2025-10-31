@@ -9,6 +9,7 @@ import { LayerSystem } from './src/systems/layer.js'
 import { CameraSystem } from './src/systems/camera.js'
 import { InputSystem, INPUT_MANAGER } from './src/systems/input.js'
 import { EnemySpawnerSystem } from './src/systems/enemySpawner.js'
+import { EnemyScriptSystem } from './src/systems/enemyScript.js'
 import { MissileSpawnerSystem } from './src/systems/missileSpawner.js'
 import { PLAYER_ABILITIES  } from './src/player.js'
 import { drawTriangle, drawBg, drawVulcan, drawMissile } from './draw.js'
@@ -24,18 +25,12 @@ console.log('----------\n start \n ----------')
 const FPS = 60
 const FIXED_UPDATE_STEP_MS = 1000 / FPS
 
-// TODO: This is probably bad, 
-// but needed to get the character not in the top-left corner
-const SCREEN_CENTER_OFFSET_X = 100
-const SCREEN_CENTER_OFFSET_Y = 100
-
 let accumulator = 0
 let lastTime = 0
 let level = null
 
 // Entity Archetypes
 const CAMERA_ABILITIES = [new Follows(), new ScreenPosition()]
-const VULCAN_ABILITIES = [new Force(), new Health(1000), new Position(), new ScreenPosition(), new Velocity()]
 
 function setup() {
   lastTime = performance.now()
@@ -58,6 +53,8 @@ function setup() {
 
 function onUpdate(level, dt) {
   InputSystem.update(level, dt)
+  
+  EnemyScriptSystem.update(level, dt)
 
   RotationSystem.update(level, dt)
   PhysicsSystem.update(level, dt)
@@ -95,10 +92,8 @@ function onRender() {
     // console.log(`Player position: (${pos.vector.x}, ${pos.vector.y})`)
     drawTriangle(
       ctx,
-      // TODO: Make the player coordinate the center of the screen.
-      // Currently it's the topleft corner 
-      pos.vector.x + SCREEN_CENTER_OFFSET_X,
-      pos.vector.y + SCREEN_CENTER_OFFSET_Y,
+      pos.vector.x,
+      pos.vector.y,
       rot.angle
     ) 
   })
@@ -113,11 +108,9 @@ function onRender() {
     // console.log(`Player position: (${pos.vector.x}, ${pos.vector.y})`)
     drawTriangle(
       ctx,
-      // TODO: Make the player coordinate the center of the screen.
-      // Currently it's the topleft corner 
-      pos.vector.x + SCREEN_CENTER_OFFSET_X,
-      pos.vector.y + SCREEN_CENTER_OFFSET_Y,
-      rot.angle, 0.3
+      pos.vector.x,
+      pos.vector.y,
+      rot.angle, 2
     ) 
   }) 
   // Query player position for rendering 
@@ -130,10 +123,8 @@ function onRender() {
     // console.log(`Player position: (${pos.vector.x}, ${pos.vector.y})`)
     drawMissile(
       ctx,
-      // TODO: Make the player coordinate the center of the screen.
-      // Currently it's the topleft corner 
-      pos.vector.x + SCREEN_CENTER_OFFSET_X,
-      pos.vector.y + SCREEN_CENTER_OFFSET_Y,
+      pos.vector.x,
+      pos.vector.y,
       rot.angle
     ) 
   })

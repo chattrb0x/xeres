@@ -1,6 +1,9 @@
 import { Follows, Position, ScreenPosition, TakesInput } from '../component.js'
 import { Query } from '../query.js'
 
+const SCREEN_CENTER_OFFSET_X = 100
+const SCREEN_CENTER_OFFSET_Y = 100
+
 class CameraSystem {
   static setup(level, player, width, height) {
     const cam = Query.find(level, [Follows]).components.get(Follows)
@@ -16,9 +19,9 @@ class CameraSystem {
     const camPos = camera.components.get(ScreenPosition)
     
     // Update position based on entity
-    camPos.x = pos.vector.x
-    camPos.y = pos.vector.y
+    camPos.x = pos.vector.x - SCREEN_CENTER_OFFSET_X
+    camPos.y = pos.vector.y - SCREEN_CENTER_OFFSET_Y
   }
 }
 
-export { CameraSystem }
+export { CameraSystem, SCREEN_CENTER_OFFSET_X, SCREEN_CENTER_OFFSET_Y }
