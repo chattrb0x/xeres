@@ -4,9 +4,10 @@ class Component {}
 class BackgroundLayer extends Component {}
 class Enemy extends Component {}
 class Collidable extends Component {
-  constructor(r=10) {
+  constructor(r=12) {
     super()
     this.radius = r
+    this.restitution = 1
   }
 }
 class Health extends Component {

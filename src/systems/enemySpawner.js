@@ -18,7 +18,7 @@ const ENEMY_ABILITIES = [
 let count = 0
 class EnemySpawnerSystem {
   static setup(level) {
-    while (count < 1) {
+    while (count < 10) {
       level.createEntity([
         new Collidable(),
         new Enemy(),
