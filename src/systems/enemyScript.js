@@ -32,10 +32,10 @@ class EnemyScriptSystem {
             const enemyToPlayerVector =  closestPlayerPosition.vector.clone().subtract(enemyPosition.vector.clone())
             const angleToPlayer = enemyToPlayerVector.angle() // closestPlayerPosition.vector.clone().angleBetween(enemyPosition.vector.clone())
             enemyRotation.angle = angleToPlayer
-            enemyMissileFired.fired = true
-            enemyMissileFired.startPosition = enemyPosition.vector.clone()            
-            enemyMissileFired.fireAngle = angleToPlayer
-            enemyMissileFired.startVelocity = enemyPosition.vector.clone()
+            // enemyMissileFired.fired = true
+            // enemyMissileFired.startPosition = enemyPosition.vector.clone()            
+            // enemyMissileFired.fireAngle = angleToPlayer
+            // enemyMissileFired.startVelocity = enemyPosition.vector.clone()
         }
     }
 

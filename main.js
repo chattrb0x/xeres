@@ -6,6 +6,7 @@ import { MovementSystem } from './src/systems/movement.js'
 import { PhysicsSystem } from './src/systems/physics.js'
 import { RotationSystem } from './src/systems/rotation.js'
 import { LayerSystem } from './src/systems/layer.js'
+import { CollisionSystem } from './src/systems/collision.js'
 import { CameraSystem } from './src/systems/camera.js'
 import { InputSystem, INPUT_MANAGER } from './src/systems/input.js'
 import { EnemySpawnerSystem } from './src/systems/enemySpawner.js'
@@ -61,7 +62,9 @@ function onUpdate(level, dt) {
   MovementSystem.update(level, dt)
   
   MissileSpawnerSystem.update(level, dt)
-
+  
+  CollisionSystem.update(level, dt)
+  
   // Moves camera based on player pos so must come last
   CameraSystem.update(level, dt)
 }

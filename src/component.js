@@ -3,6 +3,12 @@ import { Vector2 } from "./vector.js"
 class Component {}
 class BackgroundLayer extends Component {}
 class Enemy extends Component {}
+class Collidable extends Component {
+  constructor(r=10) {
+    super()
+    this.radius = r
+  }
+}
 class Health extends Component {
   constructor(hp=1000) {
     super()
@@ -86,6 +92,7 @@ class MissileFired extends Component {
 
 export {
   BackgroundLayer,
+  Collidable,
   Enemy,
   Rotation,
   ScreenPosition,
