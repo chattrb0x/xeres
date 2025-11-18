@@ -1,4 +1,4 @@
-import { Collidable, Position, ScreenPosition, Velocity, Mass, Force } from '../component.js'
+import { Enemy, Collidable, Position, ScreenPosition, TakesInput, Velocity, Mass, Force } from '../component.js'
 import { Query } from '../query.js'
 import { Vector2 } from '../vector.js'
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../screen.js'
@@ -75,9 +75,10 @@ function hashCoords(xi, yi) {
 
 class CollisionSystem {
   static update(level, dt) {
-    const bodies = Query.findAll(level, [Collidable, Position, ScreenPosition])
+    const enemies = Query.findAll(level, [Enemy, Collidable, Position, ScreenPosition])
+    const players= Query.findAll(level, [Collidable, Position, ScreenPosition, TakesInput])
     
-    const hasWorldPos = bodies.filter(({ entity, components }) => components.get(ScreenPosition))
+    let hasWorldPos = enemies.filter(({ entity, components }) => components.get(ScreenPosition))
     
     const entitiesByWorldPos = {}
     for (const body of hasWorldPos) {
@@ -87,6 +88,15 @@ class CollisionSystem {
       entitiesByWorldPos[screen.worldPos].push(body)
     }
     
+    hasWorldPos = players.filter(({ entity, components }) => components.get(ScreenPosition))
+    for (const body of hasWorldPos) {
+      const screen = body.components.get(ScreenPosition)
+      if(!screen.worldPos) continue
+      if(!entitiesByWorldPos[screen.worldPos]) entitiesByWorldPos[screen.worldPos] = []
+      entitiesByWorldPos[screen.worldPos].push(body)
+    }
+    // looking at players - END
+    
     const hasCollision = {}
     Object.entries(entitiesByWorldPos).forEach(([worldPos, entities]) => {
       hasCollision[worldPos] = entities.length > 1 ? entities : []
@@ -95,6 +105,10 @@ class CollisionSystem {
     // screenGroups with more than one Collidable
     Object.values(hasCollision).forEach(entities => {
       if (entities.length < 2) return
+      
+      // ignore collisions if no player involved
+      const hasPlayerTag = entities.filter(body => body.components.get(TakesInput))
+      if (hasPlayerTag.length < 1) return
       
       // Extract positions for spatial hashing
       const allPos = entities.map(body => body.components.get(Position))
@@ -115,17 +129,24 @@ class CollisionSystem {
           if (entityIdx <= i) continue // Avoid duplicate checks
           
           const bodyB = entities[entityIdx]
+          
+          // ignore collisions between enemies
+          const [enA, enB] = [bodyA.components.get(TakesInput), bodyB.components.get(Enemy)]
+          // console.log([enA, enB?.constructor.name])
+          if (!enA && enB?.constructor.name == "Enemy") continue
+           
           const posB = bodyB.components.get(Position)
           const collidableA = bodyA.components.get(Collidable)
           const collidableB = bodyB.components.get(Collidable)
           
           // Calculate distance between entities
           const delta = posB.vector.clone().subtract(posA.vector.clone())
-          const distanceSquared = delta.x * delta.x + delta.y * delta.y
+          const distanceSquared = delta.clone().dot(delta.clone())
           const minDistance = collidableA.radius + collidableB.radius
-              
+         
           // Check if collision occurred
           if (distanceSquared < minDistance * minDistance && distanceSquared > 0) {
+            console.log(distanceSquared)
             CollisionSystem.resolveCollision(bodyA, bodyB, delta, Math.sqrt(distanceSquared))
           }
         }
@@ -138,8 +159,7 @@ class CollisionSystem {
     const posB = bodyB.components.get(Position)
     const collidableA = bodyA.components.get(Collidable)
     const collidableB = bodyB.components.get(Collidable)
-    console.log("boom")
-   
+    
     // Normalize collision vector
     const nx = delta.x / distance
     const ny = delta.y / distance
@@ -154,7 +174,7 @@ class CollisionSystem {
     const velA = bodyA.components.get(Velocity)
     const velB = bodyB.components.get(Velocity)
     
-    if (velA && velB) {
+    if (velA?.vector && velB?.vector) {
       // Calculate relative velocity
       const rvx = velB.vector.x - velA.vector.x
       const rvy = velB.vector.y - velA.vector.y
@@ -169,6 +189,7 @@ class CollisionSystem {
         velB.vector = velB.vector.clone().add(impulseV)
       }
     }
+    
   }
 }
 export { CollisionSystem, hashPos }

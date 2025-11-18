@@ -153,7 +153,7 @@ function loop(currentTime) {
 
 
 // Example usage and testing
-console.log("Morton Encoding Examples (8-bit):");
+// console.log("Morton Encoding Examples (8-bit):");
 console.log("==================================");
 
 const testCases = [
@@ -167,7 +167,7 @@ const testCases = [
 testCases.forEach(({ x, y }) => {
    const encoded = mortonEncode(x, y);
    const decoded = mortonDecode(encoded);
-    console.log(`(${x}, ${y}) -> 0x${encoded.toString(16).padStart(4, '0')} -> (${decoded.x}, ${decoded.y})`);
+   // console.log(`(${x}, ${y}) -> 0x${encoded.toString(16).padStart(4, '0')} -> (${decoded.x}, ${decoded.y})`);
 })
 
 setup()

@@ -23,7 +23,7 @@ class Query {
     return results
   }
   static find(level, componentTypes) {
-    const results = Query.findAll(level,componentTypes)
+    const results = Query.findAll(level, componentTypes)
     return results[0]
   }
 }

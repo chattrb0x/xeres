@@ -20,10 +20,10 @@ class EnemySpawnerSystem {
   static setup(level) {
     while (count < 10) {
       level.createEntity([
-        new Collidable(),
+        new Collidable(10),
         new Enemy(),
-        // new Force(randomVector(0.001)), 
-        new Force(new Vector2(0, 0)),
+        new Force(randomVector(0.001)), 
+        // new Force(new Vector2(0, 0)),
         new Mass(1), 
         new Position(randomVector(100)), 
         new Rotation(), 

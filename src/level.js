@@ -1,12 +1,25 @@
 import { Archetype } from './archetype.js'
 import { Entity } from './entity.js'
 
+class Event {
+  constructor(name, payload) {
+    this.name = name
+    this.payload = payload
+  }
+}
+
 class Level {
   constructor(size=16) {
     this.nextEntityId = 1  // WARNING: Do not use this as an index
     this.archetypes = new Map()
     this.entityRecords = new Map()
+    this.events = []
     this.freeIds = [] // Maintain a stack for recycling freed IDs when entities are destroyed.
+  }
+  addEvent(name, payload) {
+    this.events.push(
+      new Event(name, payload)
+    ) 
   }
   hasArchetype(components) {
     const sig = Archetype.makeSignature(components)

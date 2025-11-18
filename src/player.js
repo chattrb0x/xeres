@@ -2,7 +2,7 @@ import { Collidable, Health, Rotation, ScreenPosition, TakesInput, Velocity, Pos
 import { Vector2 } from './vector.js'
 
 const PLAYER_ABILITIES = [
-  new Collidable(),
+  new Collidable(20),
   new Force(),
   new Health(1000),
   new Mass(),
