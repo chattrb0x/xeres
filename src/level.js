@@ -1,5 +1,5 @@
 import { Archetype } from './archetype.js'
-import { Entity } from './entity.js'
+import { Entity } from './entities/entity.js'
 
 class Event {
   constructor(name, payload) {

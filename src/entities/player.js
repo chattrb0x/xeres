@@ -1,5 +1,5 @@
-import { Collidable, Health, Rotation, ScreenPosition, TakesInput, Velocity, Position, Mass, Force, MissileFired } from './component.js'
-import { Vector2 } from './vector.js'
+import { Collidable, Health, Rotation, ScreenPosition, TakesInput, Velocity, Position, Mass, Force, MissileFired } from '../component.js'
+import { Vector2 } from '../vector.js'
 
 const PLAYER_ABILITIES = [
   new Collidable(20),

@@ -9,11 +9,11 @@ import { LayerSystem } from './src/systems/layer.js'
 import { CollisionSystem } from './src/systems/collision.js'
 import { CameraSystem } from './src/systems/camera.js'
 import { InputSystem, INPUT_MANAGER } from './src/systems/input.js'
-import { EnemySpawnerSystem } from './src/systems/enemySpawner.js'
 import { EnemyScriptSystem } from './src/systems/enemyScript.js'
 import { MissileSpawnerSystem } from './src/systems/missileSpawner.js'
 import { HealthSystem } from './src/systems/health.js'
-import { PLAYER_ABILITIES  } from './src/player.js'
+import { PLAYER_ABILITIES  } from './src/entities/player.js'
+import { ENEMY_ABILITIES } from './src/entities/enemy.js'
 import { drawTriangle, drawBg, drawVulcan, drawMissile } from './draw.js'
 
 // Setup main canvas
@@ -47,12 +47,21 @@ function setup() {
   for(let g = 0; g < cols * rows; g++) level.createEntity([new Position(), new BackgroundLayer()])
   LayerSystem.setup(level)
   
+  // Player 
   const player = level.createEntity(PLAYER_ABILITIES)
   level.createEntity(CAMERA_ABILITIES)
   
-  EnemySpawnerSystem.setup(level)
+  // Initial Enemies
+  let count = 0
+  while (count < 10) {
+    level.createEntity(ENEMY_ABILITIES)
+    count++
+  }
+  
   HealthSystem.setup(level.eventBus)
   CameraSystem.setup(level, player, canvas.width, canvas.height)
+  
+  console.log("setup complete")
 }
 
 function onUpdate(level, dt) {
