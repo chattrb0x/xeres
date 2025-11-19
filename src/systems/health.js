@@ -2,8 +2,8 @@ import { Health } from '../component.js'
 import { Query } from '../query.js'
 
 class HealthSystem {
-  static setup(eventBus) {
-    this.eventBus = eventBus
+  static setup(level) {
+    this.eventBus = level.eventBus
    
     this.eventBus.on('player:health', HealthSystem.onUpdateHealth.bind(this))
   }

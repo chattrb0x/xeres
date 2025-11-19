@@ -95,6 +95,9 @@ class InputManager {
 const INPUT_MANAGER = new InputManager()
 
 class InputSystem {
+  static setup(level) {
+    this.eventBus = level.eventBus
+  }
   static update(level, dt) {
     // TODO: Just the player and not everything with force and rotation? 
     const entityRecords = Query.findAll(level, [Position, Force, Rotation, MissileFired, Velocity, TakesInput])
@@ -114,6 +117,8 @@ class InputSystem {
             entityForce.vector.add(new Vector2(0, moveStrength).rotate(entityRotation.angle))
         } 
         if (INPUT_MANAGER.getKeyDown("Space")) {
+          console.log("fire")
+          this.eventBus.emit("player:fire", entity, "missile")
           entityMissile.fired = true
           entityMissile.startPosition = entityPosition.vector.clone()
           entityMissile.fireAngle = entityRotation.angle

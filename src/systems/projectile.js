@@ -1,40 +1,34 @@
 import { Health, Rotation, ScreenPosition, Velocity, Position, Mass, Force, MissileFired, Timer } from '../component.js'
 import { Query } from '../query.js'
 import { Vector2 } from '../vector.js'
-
-const MISSILE_ABILITIES = [
-    new Force(),
-    new Health(100),
-    new Mass(),
-    new Rotation(),
-    new ScreenPosition(),
-    new Velocity(new Vector2(0, -1)),
-    new Position(),
-    new Timer(),
-]
+import { MISSILE_ABILITIES } from '../entities/projectile.js'
 
 const MISSILE_LIFE_TIME = 600
 const MISSILE_SLOW_TIME = 30
 const MISSILE_FIRE_COOLDOWN = 20
 
-class MissileSpawnerSystem {
+class ProjectileSystem {
+  static setup(level) {
+      this.eventBus = level.eventBus
+      
+      this.eventBus.on('player:fire', ProjectileSystem.onFire.bind(this))
+  }
+  static onFire(entity, projectile) {
+      if (projectile === 'missile') {
+        const lastFired = entity.components.get(MissileFired)
+        if (lastFired.fired && lastFired.timeSinceLastFire > MISSILE_FIRE_COOLDOWN) {
+            level.createEntity(MISSILE_ABILITIES)
+            lastFired.timeSinceLastFire = 0
+        }
+        lastFired.timeSinceLastFire += 1
+        lastFired.fired = false
+      }
+  }
   static update(level, dt) {
-    // TODO: Despawn or detonate missiles after a certain amount of time.
     Query.findAll(level, [MissileFired])?.forEach(({ components }) => {
         const firedFlag = components.get(MissileFired)
         if (firedFlag.fired && firedFlag.timeSinceLastFire > MISSILE_FIRE_COOLDOWN) {
-            level.createEntity(
-                [
-                    new Force(),
-                    new Health(100),
-                    new Mass(),
-                    new Rotation(),
-                    new ScreenPosition(),
-                    new Velocity(new Vector2(0, -0.1).rotate(firedFlag.fireAngle).add(firedFlag.startVelocity)),
-                    new Position(firedFlag.startPosition.clone()),
-                    new Timer(MISSILE_LIFE_TIME)
-                ]
-            )
+            level.createEntity(MISSILE_ABILITIES)
             firedFlag.timeSinceLastFire = 0
         }
         firedFlag.timeSinceLastFire += 1
@@ -56,4 +50,4 @@ class MissileSpawnerSystem {
   }
 }
 
-export { MissileSpawnerSystem, MISSILE_ABILITIES }
+export { ProjectileSystem }

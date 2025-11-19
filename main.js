@@ -10,7 +10,7 @@ import { CollisionSystem } from './src/systems/collision.js'
 import { CameraSystem } from './src/systems/camera.js'
 import { InputSystem, INPUT_MANAGER } from './src/systems/input.js'
 import { EnemyScriptSystem } from './src/systems/enemyScript.js'
-import { MissileSpawnerSystem } from './src/systems/missileSpawner.js'
+import { ProjectileSystem } from './src/systems/projectile.js'
 import { HealthSystem } from './src/systems/health.js'
 import { PLAYER_ABILITIES  } from './src/entities/player.js'
 import { ENEMY_ABILITIES } from './src/entities/enemy.js'
@@ -39,6 +39,7 @@ function setup() {
   
   level = new Level
   
+  InputSystem.setup(level)
   CollisionSystem.setup(level)
   
   // Background grid
@@ -58,7 +59,8 @@ function setup() {
     count++
   }
   
-  HealthSystem.setup(level.eventBus)
+  HealthSystem.setup(level)
+  ProjectileSystem.setup(level)
   CameraSystem.setup(level, player, canvas.width, canvas.height)
   
   console.log("setup complete")
@@ -73,7 +75,7 @@ function onUpdate(level, dt) {
   PhysicsSystem.update(level, dt)
   MovementSystem.update(level, dt)
   
-  MissileSpawnerSystem.update(level, dt)
+  ProjectileSystem.update(level, dt)
   
   CollisionSystem.update(level, dt)
   
