@@ -12,6 +12,7 @@ import { InputSystem, INPUT_MANAGER } from './src/systems/input.js'
 import { EnemySpawnerSystem } from './src/systems/enemySpawner.js'
 import { EnemyScriptSystem } from './src/systems/enemyScript.js'
 import { MissileSpawnerSystem } from './src/systems/missileSpawner.js'
+import { HealthSystem } from './src/systems/health.js'
 import { PLAYER_ABILITIES  } from './src/player.js'
 import { drawTriangle, drawBg, drawVulcan, drawMissile } from './draw.js'
 
@@ -50,7 +51,7 @@ function setup() {
   level.createEntity(CAMERA_ABILITIES)
   
   EnemySpawnerSystem.setup(level)
-  
+  HealthSystem.setup(level.eventBus)
   CameraSystem.setup(level, player, canvas.width, canvas.height)
 }
 

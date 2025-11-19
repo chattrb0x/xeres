@@ -6,13 +6,15 @@ const randomVector = (scaler) => new Vector2(
   Math.random() * 3 * scaler
 )
 const ENEMY_ABILITIES = [
-    new Enemy(),
-    new Force(new Vector2(0, 0)), 
-    new Mass(1), 
-    new Position(randomVector(100)), 
-    new Rotation(), 
-    new ScreenPosition(), 
-    new Velocity(new Vector2(0, 0))
+  new Collidable(10),
+  new Enemy(),
+  new Force(new Vector2(0, 0)),
+  new Health(10),
+  new Mass(1), 
+  new Position(randomVector(100)), 
+  new Rotation(), 
+  new ScreenPosition(), 
+  new Velocity(new Vector2(0, 0))
 ]
 
 let count = 0
@@ -22,8 +24,8 @@ class EnemySpawnerSystem {
       level.createEntity([
         new Collidable(10),
         new Enemy(),
-        new Force(randomVector(0.001)), 
-        // new Force(new Vector2(0, 0)),
+        new Force(randomVector(0.001)),
+        new Health(10),
         new Mass(1), 
         new Position(randomVector(100)), 
         new Rotation(), 

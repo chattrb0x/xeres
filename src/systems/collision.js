@@ -1,4 +1,4 @@
-import { Enemy, Collidable, Position, ScreenPosition, TakesInput, Velocity, Mass, Force } from '../component.js'
+import { Enemy, Collidable, Health, Position, ScreenPosition, TakesInput, Velocity, Mass, Force } from '../component.js'
 import { Query } from '../query.js'
 import { Vector2 } from '../vector.js'
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../screen.js'
@@ -77,11 +77,11 @@ class CollisionSystem {
   static setup(level) {
     this.eventBus = level.eventBus
     
-    this.eventBus.on('player:collision', CollisionSystem.resolveCollision.bind(this))
+    this.eventBus.on('player:collision', CollisionSystem.onResolveCollision.bind(this))
   }
   static update(level, dt) {
-    const enemies = Query.findAll(level, [Enemy, Collidable, Position, ScreenPosition])
-    const players= Query.findAll(level, [Collidable, Position, ScreenPosition, TakesInput])
+    const enemies = Query.findAll(level, [Enemy, Collidable, Health, Position, ScreenPosition])
+    const players= Query.findAll(level, [Collidable, Health, Position, ScreenPosition, TakesInput])
     
     let hasWorldPos = enemies.filter(({ entity, components }) => components.get(ScreenPosition))
     
@@ -163,8 +163,9 @@ class CollisionSystem {
     })
   }
   
-  static resolveCollision({ bodyA, bodyB, delta, distance }) {
-    console.log(distance)
+  static onResolveCollision({ bodyA, bodyB, delta, distance }) {
+    // console.log(distance)
+    this.eventBus.emit("player:health", { entities: [bodyA, bodyB] })
     const posA = bodyA.components.get(Position)
     const posB = bodyB.components.get(Position)
     const collidableA = bodyA.components.get(Collidable)
