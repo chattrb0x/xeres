@@ -36,7 +36,9 @@ const CAMERA_ABILITIES = [new Follows(), new ScreenPosition()]
 function setup() {
   lastTime = performance.now()
   
-  level = new Level()
+  level = new Level
+  
+  CollisionSystem.setup(level)
   
   // Background grid
   const cols = 64

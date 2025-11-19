@@ -74,6 +74,11 @@ function hashCoords(xi, yi) {
 }
 
 class CollisionSystem {
+  static setup(level) {
+    this.eventBus = level.eventBus
+    
+    this.eventBus.on('player:collision', CollisionSystem.resolveCollision.bind(this))
+  }
   static update(level, dt) {
     const enemies = Query.findAll(level, [Enemy, Collidable, Position, ScreenPosition])
     const players= Query.findAll(level, [Collidable, Position, ScreenPosition, TakesInput])
@@ -146,15 +151,20 @@ class CollisionSystem {
          
           // Check if collision occurred
           if (distanceSquared < minDistance * minDistance && distanceSquared > 0) {
-            console.log(distanceSquared)
-            CollisionSystem.resolveCollision(bodyA, bodyB, delta, Math.sqrt(distanceSquared))
+            this.eventBus.emit('player:collision', {
+              bodyA, 
+              bodyB, 
+              delta, 
+              distance: Math.sqrt(distanceSquared)
+            })
           }
         }
       }
     })
   }
   
-  static resolveCollision(bodyA, bodyB, delta, distance) {
+  static resolveCollision({ bodyA, bodyB, delta, distance }) {
+    console.log(distance)
     const posA = bodyA.components.get(Position)
     const posB = bodyB.components.get(Position)
     const collidableA = bodyA.components.get(Collidable)

@@ -5,21 +5,82 @@ class Event {
   constructor(name, payload) {
     this.name = name
     this.payload = payload
+    this.timestamp = Date.now()
   }
 }
+class EventBus {
+  constructor() {
+    this.listeners = new Map()
+  }
+  on(eventName, callback, priority = 0) {
+    if (!this.listeners.has(eventName)) this.listeners.set(eventName, [])
 
+    const listener = { callback, priority }
+    const listeners = this.listeners.get(eventName)
+    
+    // Insert based on priority (higher priority = earlier execution)
+    const index = listeners.findIndex(l => l.priority < priority)
+    if (index === -1) {
+      listeners.push(listener)
+    } else {
+      listeners.splice(index, 0, listener)
+    }
+
+    // Return unsubscribe function
+    return () => this.off(eventName, callback)
+  }
+
+  // Unsubscribe from an event
+  off(eventName, callback) {
+    if (!this.listeners.has(eventName)) return
+
+    const listeners = this.listeners.get(eventName)
+    const index = listeners.findIndex(l => l.callback === callback)
+    
+    if (index !== -1) {
+      listeners.splice(index, 1)
+    }
+
+    // Clean up empty listener arrays
+    if (listeners.length === 0) this.listeners.delete(eventName)
+  }
+
+  // Subscribe to an event once
+  once(eventName, callback, priority = 0) {
+    const wrappedCallback = (...args) => {
+      this.off(eventName, wrappedCallback)
+      callback(...args)
+    }
+    return this.on(eventName, wrappedCallback, priority)
+  }
+
+  // Emit an event immediately
+  emit(eventName, payload = {}) {
+    if (!this.listeners.has(eventName)) return
+
+    const listeners = this.listeners.get(eventName)
+    for (const listener of listeners) {
+      listener.callback(payload)
+    }
+  }
+  emitDeferred(eventName, payload = {}) {
+    requestAnimationFrame(() => this.emit(eventName, payload))
+  }
+  clear(eventName = null) {
+    if (eventName) {
+      this.listeners.delete(eventName)
+    } else {
+      this.listeners.clear()
+    }
+  } 
+}
 class Level {
   constructor(size=16) {
     this.nextEntityId = 1  // WARNING: Do not use this as an index
     this.archetypes = new Map()
     this.entityRecords = new Map()
-    this.events = []
+    this.eventBus = new EventBus()
     this.freeIds = [] // Maintain a stack for recycling freed IDs when entities are destroyed.
-  }
-  addEvent(name, payload) {
-    this.events.push(
-      new Event(name, payload)
-    ) 
   }
   hasArchetype(components) {
     const sig = Archetype.makeSignature(components)
