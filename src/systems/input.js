@@ -64,6 +64,14 @@ class InputManager {
       }
       this.keysDown.add(fireCode)
     })
+    document.getElementById("gun").addEventListener("click", () => {
+      // Pretend we pushed `Shift`
+      const fireCode = "Shift"
+      if (!this.keysDown.has(fireCode)) {
+        this.keysPressed.add(fireCode)
+      }
+      this.keysDown.add(fireCode)
+    })
   }
   onKeyDown(e) {
     if (!this.keysDown.has(e.code)) {
@@ -117,12 +125,14 @@ class InputSystem {
             entityForce.vector.add(new Vector2(0, moveStrength).rotate(entityRotation.angle))
         } 
         if (INPUT_MANAGER.getKeyDown("Space")) {
-          console.log("fire")
-          this.eventBus.emit("player:fire", entity, "missile")
           entityMissile.fired = true
           entityMissile.startPosition = entityPosition.vector.clone()
           entityMissile.fireAngle = entityRotation.angle
           entityMissile.startVelocity = entityVelocity.vector.clone()
+          this.eventBus.emit("player:fire", { entity, projectile: "missile" })
+        }
+        if(INPUT_MANAGER.getKeyDown("Shift")) {
+          this.eventBus.emit("player:fire", { entity, projectile: "gun" })
         }
         if (INPUT_MANAGER.clickCoord !== null) {
           // This needs to take into account the screen offset since we're clicking in the camera space.

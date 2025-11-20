@@ -74,7 +74,7 @@ class Follows extends Component {
   }
 }
 class Timer extends Component {
-  constructor(lifeTime=1, time=0) {
+  constructor(lifeTime=500, time=0) {
     super()
     this.lifeTime = lifeTime
     this.time = time

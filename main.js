@@ -63,7 +63,7 @@ function setup() {
   ProjectileSystem.setup(level)
   CameraSystem.setup(level, player, canvas.width, canvas.height)
   
-  console.log("setup complete")
+  console.log("- setup complete")
 }
 
 function onUpdate(level, dt) {
@@ -131,19 +131,23 @@ function onRender() {
     ) 
   }) 
   // Query player position for rendering 
-  const missileRecords = Query.findAll(level, [Timer, Position, Rotation])
-  // console.log(entityRecords.length)
-  missileRecords.forEach(entity => {
+  const projectileRecords = Query.findAll(level, [Timer, Position])
+  // console.log(projectileRecords.length)
+  projectileRecords.forEach(entity => {
     const { components } = entity
     const pos = components.get(Position)
     const rot = components.get(Rotation)
-    // console.log(`Player position: (${pos.vector.x}, ${pos.vector.y})`)
-    drawMissile(
-      ctx,
-      pos.vector.x,
-      pos.vector.y,
-      rot.angle
-    ) 
+    // console.log(`Projectile position: (${pos.vector.x}, ${pos.vector.y})`)
+    if(rot) {
+      drawMissile(
+        ctx,
+        pos.vector.x,
+        pos.vector.y,
+        rot.angle
+      )
+    } else {
+      drawVulcan(ctx, pos.vector.x, pos.vector.y)
+    }
   })
 
   ctx.restore()
@@ -169,20 +173,6 @@ function loop(currentTime) {
 // Example usage and testing
 // console.log("Morton Encoding Examples (8-bit):");
 console.log("==================================");
-
-const testCases = [
-    { x: 0, y: 0 },
-    { x: 1, y: 1 },
-    { x: -1, y: -1 },
-    { x: 127, y: 127 },
-    { x: -127, y: -127 }
-]
-
-testCases.forEach(({ x, y }) => {
-   const encoded = mortonEncode(x, y);
-   const decoded = mortonDecode(encoded);
-   // console.log(`(${x}, ${y}) -> 0x${encoded.toString(16).padStart(4, '0')} -> (${decoded.x}, ${decoded.y})`);
-})
 
 setup()
 loop(performance.now())

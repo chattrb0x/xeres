@@ -33,7 +33,7 @@ function drawTriangle(ctx, centerX, centerY, angle, scale=1) {
 }
 function drawVulcan(ctx, x, y) {
   ctx.fillStyle = '#FFFFFF'
-  ctx.fillRect(x, y, 3, 3)
+  ctx.fillRect(x, y, 10, 10)
 }
 function drawMissile(ctx, centerX, centerY, angle) {
   const cosTheta = Math.cos(angle)

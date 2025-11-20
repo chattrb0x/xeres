@@ -93,13 +93,14 @@ class Level {
     return archetype
   }
   createEntity(components){
+
     const componentTypes = components.map(c => c.constructor)
-   
     let archetype = this.hasArchetype(componentTypes)
+    // console.log(archetype)
     if(!archetype) {
       archetype = this.attachArchetype(componentTypes)
     }
-
+    
     // Associate entity with an archetype for easy look-up
     const id = this.freeIds.length > 0
       ? this.freeIds.pop()
