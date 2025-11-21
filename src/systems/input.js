@@ -1,7 +1,7 @@
 import { Query } from '../query.js'
 import { Vector2 } from '../vector.js'
 import { Force, Rotation, MissileFired, Position, Velocity, TakesInput } from '../component.js'
-import {SCREEN_CENTER_OFFSET_X, SCREEN_CENTER_OFFSET_Y} from './camera.js'
+import { SCREEN_CENTER_OFFSET_X, SCREEN_CENTER_OFFSET_Y } from './camera.js'
 
 let touchActive = false
 class InputManager {
@@ -98,12 +98,13 @@ class InputManager {
     this.keysReleased.clear()
     this.clickCoord = null
   }
-
 }
 const INPUT_MANAGER = new InputManager()
 
 class InputSystem {
-  static setup(level) {
+  static setup(level, canvas) {
+    INPUT_MANAGER.setup(canvas)
+    
     this.eventBus = level.eventBus
   }
   static update(level, dt) {
@@ -111,8 +112,7 @@ class InputSystem {
     const entityRecords = Query.findAll(level, [Position, Force, Rotation, MissileFired, Velocity, TakesInput])
     if (!entityRecords?.length) return
     const moveStrength = 0.001
-    entityRecords.forEach(entity => {
-        const { components } = entity
+    entityRecords.forEach(({ components }}) => {
         const entityForce = components.get(Force)
         const entityRotation = components.get(Rotation)
         const entityMissile = components.get(MissileFired)
@@ -120,7 +120,7 @@ class InputSystem {
         const entityVelocity = components.get(Velocity)
         if (INPUT_MANAGER.getKeyDown("KeyW")) {
             entityForce.vector.add(new Vector2(0, -moveStrength).rotate(entityRotation.angle))
-        } 
+        }
         if (INPUT_MANAGER.getKeyDown("KeyS")) {
             entityForce.vector.add(new Vector2(0, moveStrength).rotate(entityRotation.angle))
         } 
@@ -139,7 +139,7 @@ class InputSystem {
           const dx = INPUT_MANAGER.clickCoord.x - SCREEN_CENTER_OFFSET_X;
           const dy = INPUT_MANAGER.clickCoord.y - SCREEN_CENTER_OFFSET_Y;
           // Not sure why we need to add Pi/2 lol.
-          entityRotation.angle = Math.atan2(dy,dx) + Math.PI / 2
+          entityRotation.angle = Math.atan2(dy,dx) + (Math.PI / 2)
         }  
     })
     INPUT_MANAGER.endFrame()
