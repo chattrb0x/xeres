@@ -112,7 +112,7 @@ class InputSystem {
     const entityRecords = Query.findAll(level, [Position, Force, Rotation, MissileFired, Velocity, TakesInput])
     if (!entityRecords?.length) return
     const moveStrength = 0.001
-    entityRecords.forEach(({ components }}) => {
+    entityRecords.forEach(({ components }) => {
         const entityForce = components.get(Force)
         const entityRotation = components.get(Rotation)
         const entityMissile = components.get(MissileFired)
@@ -129,15 +129,15 @@ class InputSystem {
           entityMissile.startPosition = entityPosition.vector.clone()
           entityMissile.fireAngle = entityRotation.angle
           entityMissile.startVelocity = entityVelocity.vector.clone()
-          this.eventBus.emit("player:fire", { entity, projectile: "missile" })
+          this.eventBus.emit("player:fire", { entity: { components }, projectile: "missile" })
         }
         if(INPUT_MANAGER.getKeyDown("Shift")) {
-          this.eventBus.emit("player:fire", { entity, projectile: "gun" })
+          this.eventBus.emit("player:fire", { entity: { components }, projectile: "gun" })
         }
         if (INPUT_MANAGER.clickCoord !== null) {
           // This needs to take into account the screen offset since we're clicking in the camera space.
-          const dx = INPUT_MANAGER.clickCoord.x - SCREEN_CENTER_OFFSET_X;
-          const dy = INPUT_MANAGER.clickCoord.y - SCREEN_CENTER_OFFSET_Y;
+          const dx = INPUT_MANAGER.clickCoord.x - SCREEN_CENTER_OFFSET_X
+          const dy = INPUT_MANAGER.clickCoord.y - SCREEN_CENTER_OFFSET_Y
           // Not sure why we need to add Pi/2 lol.
           entityRotation.angle = Math.atan2(dy,dx) + (Math.PI / 2)
         }  

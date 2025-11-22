@@ -4,7 +4,10 @@ import * as c from './src/component.js'
 import * as sys from './src/systems'
 import { PLAYER_ABILITIES  } from './src/entities/player.js'
 import { ENEMY_ABILITIES } from './src/entities/enemy.js'
+import { onRender } from './render.js'
 
+import eruda from 'eruda'
+eruda.init()
 
 // Setup main canvas
 const canvas = document.querySelector('canvas')
@@ -25,7 +28,7 @@ const CAMERA_ABILITIES = [new c.Follows(), new c.ScreenPosition()]
 function setup() {
   lastTime = performance.now()
   
-  level = new c.Level
+  level = new Level
   
   sys.InputSystem.setup(level, canvas)
   sys.CollisionSystem.setup(level)
@@ -82,7 +85,7 @@ function loop(currentTime) {
     accumulator -= FIXED_UPDATE_STEP_MS
   }
    
-  onRender()
+  onRender(ctx, canvas, level)
   window.requestAnimationFrame(loop)
 }
 

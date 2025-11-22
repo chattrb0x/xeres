@@ -1,3 +1,4 @@
+import { Query } from './src/query.js'
 import * as c from './src/component.js'
 import { drawTriangle, drawBg, drawVulcan, drawMissile } from './draw.js'
 
@@ -44,7 +45,6 @@ function onRender(ctx, canvas, level) {
 
   const projectileRecords = Query.findAll(level, [c.Timer, c.Position])
   projectileRecords.forEach(({ components }) => {
-    const { components } = entityRecoed
     const pos = components.get(c.Position)
     const rot = components.get(c.Rotation)
     // console.log(`Projectile position: (${pos.vector.x}, ${pos.vector.y})`)
@@ -56,7 +56,7 @@ function onRender(ctx, canvas, level) {
         rot.angle
       )
     } else {
-      drawVulcan(ctx, pos.vector.x, pos.vector.y)
+      // drawVulcan(ctx, pos.vector.x, pos.vector.y)
     }
   })
 
