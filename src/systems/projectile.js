@@ -1,11 +1,10 @@
-import { Health, Rotation, ScreenPosition, Velocity, Position, Mass, Force, MissileFired, Timer } from '../component.js'
+import { Health, Rotation, ScreenPosition, Velocity, Position, Mass, Force, MissileFired, Timer, Projectile } from '../component.js'
 import { Query } from '../query.js'
 import { Vector2 } from '../vector.js'
-import { MISSILE_ABILITIES, BULLET_ABILITIES } from '../entities/projectile.js'
+import { makeProjectile } from '../entities/projectile.js'
 
-const MISSILE_LIFE_TIME = 1600
 const MISSILE_SLOW_TIME = 30
-const MISSILE_FIRE_COOLDOWN = 20
+const MISSILE_FIRE_COOLDOWN = 40
 
 class ProjectileSystem {
   static setup(level) {
@@ -15,18 +14,16 @@ class ProjectileSystem {
       this.eventBus.on('player:fire', ProjectileSystem.onFire.bind(this))
   }
   static onFire({ entity, projectile }) {
-      if (projectile === 'missile') {
+    const startPosition = entity.components.get(Position)
+    if (projectile === 'missile') {
         const lastFired = entity.components.get(MissileFired)
-        // console.log([...entity.components.keys()].map(k => k.name))
         if (lastFired?.timeSinceLastFire > MISSILE_FIRE_COOLDOWN) {
-            this.level.createEntity(MISSILE_ABILITIES)
+            makeProjectile(this.level, projectile, startPosition.vector.clone())
             lastFired.timeSinceLastFire = 0
         }
-        lastFired.timeSinceLastFire += 1
-      }
-      if (projectile === 'gun') {
-          this.level.createEntity(BULLET_ABILITIES)
-      }
+    } else {
+        makeProjectile(this.level, projectile, startPosition.vector.clone())
+    }    
   }
   static update(level, dt) {
     // Destroy projectiles after lifetime. 
@@ -40,7 +37,13 @@ class ProjectileSystem {
             velocity.vector.scale(2)
         }
         timer.time += 1
-    })       
+    })
+
+    // Count up for missile timer cooldown every frame.
+    Query.findAll(level, [MissileFired])?.forEach(({ entity, components }) => {
+        const lastFired = components.get(MissileFired)
+        lastFired.timeSinceLastFire += 1
+    })
   }
 }
 

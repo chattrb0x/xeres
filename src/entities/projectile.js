@@ -1,24 +1,25 @@
-import { Health, Rotation, ScreenPosition, Velocity, Position, Mass, Force, MissileFired, Timer } from '../component.js'
+import { Health, Rotation, ScreenPosition, Velocity, Position, Mass, Force, MissileFired, Timer, Projectile, Collidable } from '../component.js'
 import { Query } from '../query.js'
 import { Vector2 } from '../vector.js'
+import { Entity } from './entity.js'
 
-const BULLET_ABILITIES = [
-    new Force(),
-    new Mass(1),
-    new ScreenPosition(),
-    new Velocity(new Vector2(1, 0)),
-    new Position(),
-    new Timer(),
-]
 
-const MISSILE_ABILITIES = [
-    new Force(),
-    new Mass(1),
-    new Rotation(),
-    new ScreenPosition(),
-    new Velocity(new Vector2(0, -1)),
-    new Position(),
-    new Timer(),
-]
+const PROJECTILE_COLLIDER_SIZE = 25
 
-export { MISSILE_ABILITIES, BULLET_ABILITIES }
+function makeProjectile(level, projectileType, positionVector) {
+    level.createEntity(
+        [
+            new Collidable(PROJECTILE_COLLIDER_SIZE),
+            new Force(),
+            new Mass(1),
+            new Rotation(),
+            new ScreenPosition(),
+            new Velocity(new Vector2(1, 0)),
+            new Position(positionVector.clone().add(new Vector2(PROJECTILE_COLLIDER_SIZE, 0))),
+            new Timer(),
+            new Projectile(projectileType)
+        ]
+    )
+}
+
+export { makeProjectile }

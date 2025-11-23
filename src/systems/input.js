@@ -132,7 +132,7 @@ class InputSystem {
           this.eventBus.emit("player:fire", { entity: { components }, projectile: "missile" })
         }
         if(INPUT_MANAGER.getKeyDown("Shift")) {
-          this.eventBus.emit("player:fire", { entity: { components }, projectile: "gun" })
+          this.eventBus.emit("player:fire", { entity: { components }, projectile: "bullet" })
         }
         if (INPUT_MANAGER.clickCoord !== null) {
           // This needs to take into account the screen offset since we're clicking in the camera space.

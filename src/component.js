@@ -87,9 +87,16 @@ class MissileFired extends Component {
     this.startVelocity = startVelocity
     this.fireAngle = fireAngle
     this.fired = false
-    this.timeSinceLastFire = 0
+    this.timeSinceLastFire = 100000
   }
 }
+class Projectile extends Component {
+  constructor(projectileType="bullet"){
+    super()
+    this.projectileType = projectileType
+  }
+}
+
 
 export {
   BackgroundLayer,
@@ -106,5 +113,6 @@ export {
   Force,
   Follows,
   MissileFired,
-  Timer
+  Timer,
+  Projectile
 }

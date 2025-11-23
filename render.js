@@ -1,6 +1,6 @@
 import { Query } from './src/query.js'
 import * as c from './src/component.js'
-import { drawTriangle, drawBg, drawVulcan, drawMissile } from './draw.js'
+import { drawTriangle, drawBg, drawVulcan } from './draw.js'
 
 function onRender(ctx, canvas, level) {
   ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -34,7 +34,7 @@ function onRender(ctx, canvas, level) {
   entityRecords.forEach(({ components }) => {
     const pos = components.get(c.Position)
     const rot = components.get(c.Rotation)
-    // console.log(`Player position: (${pos.vector.x}, ${pos.vector.y})`)
+    // console.log(`Enemy position: (${pos.vector.x}, ${pos.vector.y})`)
     drawTriangle(
       ctx,
       pos.vector.x,
@@ -43,21 +43,37 @@ function onRender(ctx, canvas, level) {
     ) 
   }) 
 
-  const projectileRecords = Query.findAll(level, [c.Timer, c.Position])
+  const projectileRecords = Query.findAll(level, [c.Timer, c.Position, c.Rotation, c.Projectile])
   projectileRecords.forEach(({ components }) => {
     const pos = components.get(c.Position)
     const rot = components.get(c.Rotation)
+    const proj = components.get(c.Projectile)
     // console.log(`Projectile position: (${pos.vector.x}, ${pos.vector.y})`)
-    if(rot) {
-      drawMissile(
-        ctx,
-        pos.vector.x,
-        pos.vector.y,
-        rot.angle
-      )
+    
+    if (proj.projectileType === "missile") {
+        drawTriangle(
+          ctx,
+          pos.vector.x,
+          pos.vector.y,
+          rot.angle,
+          0.4,
+          0.5,
+          '#FF0000',
+        )
+    } else if (proj.projectileType === "bullet") {
+        drawTriangle(
+          ctx,
+          pos.vector.x,
+          pos.vector.y,
+          rot.angle,
+          0.2,
+          0.25,
+          '#ff00eeff',
+        )
     } else {
-      // drawVulcan(ctx, pos.vector.x, pos.vector.y)
+      console.log("Got unknown projectile type: ", proj.projectileType)
     }
+    
   })
 
   ctx.restore()
