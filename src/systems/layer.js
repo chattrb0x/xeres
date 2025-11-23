@@ -8,9 +8,9 @@ class LayerSystem {
     const gridSize = 32
     for(let i=0; i < bg.length; i++) {
       const pos = bg[i].components.get(Position)
-        pos.x = gridSize + ((i % 64) * gridSize)
-        if(i % 64 === 0) row++
-        pos.y = row * gridSize
+      pos.x = gridSize + ((i % 64) * gridSize)
+      if(i % 64 === 0) row++
+      pos.y = row * gridSize
     }
   }
 }
