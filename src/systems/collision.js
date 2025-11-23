@@ -1,4 +1,4 @@
-import { Enemy, Collidable, Health, Position, ScreenPosition, TakesInput, Velocity, Mass, Force } from '../component.js'
+import { Enemy, Collidable, Health, Position, ScreenPosition, TakesInput, Velocity, Projectile, Mass, Force } from '../component.js'
 import { Query } from '../query.js'
 import { Vector2 } from '../vector.js'
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../screen.js'
@@ -73,6 +73,17 @@ function hashCoords(xi, yi) {
   return Math.abs(hash)
 }
 
+
+function groupByWorldPos(list, entitiesByWorldPos) {
+  for (const { components, entity } of list) {
+    const screen = components.get(ScreenPosition);
+    if (!screen || !screen.worldPos) continue;
+
+    (entitiesByWorldPos[screen.worldPos] ??= []).push({ entity, components });
+  }
+}
+
+
 class CollisionSystem {
   static setup(level) {
     this.eventBus = level.eventBus
@@ -80,27 +91,15 @@ class CollisionSystem {
     this.eventBus.on('player:collision', CollisionSystem.onResolveCollision.bind(this))
   }
   static update(level, dt) {
-    const enemies = Query.findAll(level, [Enemy, Collidable, Health, Position, ScreenPosition])
-    const players= Query.findAll(level, [Collidable, Health, Position, ScreenPosition, TakesInput])
-    
-    let hasWorldPos = enemies.filter(({ entity, components }) => components.get(ScreenPosition))
-    
-    const entitiesByWorldPos = {}
-    for (const body of hasWorldPos) {
-      const screen = body.components.get(ScreenPosition)
-      if(!screen.worldPos) continue
-      if(!entitiesByWorldPos[screen.worldPos]) entitiesByWorldPos[screen.worldPos] = []
-      entitiesByWorldPos[screen.worldPos].push(body)
-    }
-    
-    hasWorldPos = players.filter(({ entity, components }) => components.get(ScreenPosition))
-    for (const body of hasWorldPos) {
-      const screen = body.components.get(ScreenPosition)
-      if(!screen.worldPos) continue
-      if(!entitiesByWorldPos[screen.worldPos]) entitiesByWorldPos[screen.worldPos] = []
-      entitiesByWorldPos[screen.worldPos].push(body)
-    }
-    // looking at players - END
+    const enemies = Query.findAll(level, [Enemy, Collidable, Health, Position, ScreenPosition]);
+    const players = Query.findAll(level, [Collidable, Health, Position, ScreenPosition, TakesInput]);
+    const projectiles = Query.findAll(level, [Projectile, Position, ScreenPosition, Collidable]); // example
+
+    const entitiesByWorldPos = {};
+
+    groupByWorldPos(enemies, entitiesByWorldPos);
+    groupByWorldPos(players, entitiesByWorldPos);
+    groupByWorldPos(projectiles, entitiesByWorldPos);
     
     const hasCollision = {}
     Object.entries(entitiesByWorldPos).forEach(([worldPos, entities]) => {
@@ -136,21 +135,23 @@ class CollisionSystem {
           const bodyB = entities[entityIdx]
           
           // ignore collisions between enemies
-          const [enA, enB] = [bodyA.components.get(TakesInput), bodyB.components.get(Enemy)]
+          // const [enA, enB] = [bodyA.components.get(TakesInput), bodyB.components.get(Enemy)]
           // console.log([enA, enB?.constructor.name])
-          if (!enA && enB?.constructor.name == "Enemy") continue
-           
+          // if (!enA && enB?.constructor.name == "Enemy") continue
+          // TODO: Ignore collisions between entities of the same type. 
+
           const posB = bodyB.components.get(Position)
           const collidableA = bodyA.components.get(Collidable)
           const collidableB = bodyB.components.get(Collidable)
-          
+                    
           // Calculate distance between entities
           const delta = posB.vector.clone().subtract(posA.vector.clone())
           const distanceSquared = delta.clone().dot(delta.clone())
           const minDistance = collidableA.radius + collidableB.radius
          
           // Check if collision occurred
-          if (distanceSquared < minDistance * minDistance && distanceSquared > 0) {
+          if (distanceSquared < minDistance * minDistance) {
+            console.log("@@@@@@@@@@ collision detected")
             this.eventBus.emit('player:collision', {
               bodyA, 
               bodyB, 

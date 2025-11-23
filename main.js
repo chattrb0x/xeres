@@ -1,10 +1,11 @@
 import { Query } from './src/query.js'
 import { Level } from './src/level.js'
 import * as c from './src/component.js'
-import * as sys from './src/systems'
+import * as sys from './src/systems/index.js'
 import { PLAYER_ABILITIES  } from './src/entities/player.js'
-import { ENEMY_ABILITIES } from './src/entities/enemy.js'
+import { makeEnemy } from './src/entities/enemy.js'
 import { onRender } from './render.js'
+import { Vector2 } from './src/vector.js'
 
 import eruda from 'eruda'
 eruda.init()
@@ -45,8 +46,9 @@ function setup() {
   
   // Initial Enemies
   let count = 0
-  while (count < 10) {
-    level.createEntity(ENEMY_ABILITIES)
+  let numEnemies = 1
+  while (count < numEnemies) {
+    makeEnemy(level, new Vector2(200, 100))
     count++
   }
   
