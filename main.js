@@ -7,8 +7,26 @@ import { makeEnemy } from './src/entities/enemy.js'
 import { onRender } from './render.js'
 import { Vector2 } from './src/vector.js'
 
-// import eruda from 'eruda'
-// eruda.init()
+
+// Turn on Eruda by default for mobile Dev unless config'd otherwise.
+async function loadErudaConfig() {
+  try {
+    // Try to import the local config file.
+    const { ENABLE_ERUDA } = await import('./config.js');
+    return ENABLE_ERUDA;
+  } catch (err) {
+    // If the file doesn't exist, default to True.
+    return true;
+  }
+}
+
+const ENABLE_ERUDA = await loadErudaConfig();
+
+if (ENABLE_ERUDA) {
+  const eruda = await import('eruda');
+  eruda.default.init();
+}
+
 
 // Setup main canvas
 const canvas = document.querySelector('canvas')
