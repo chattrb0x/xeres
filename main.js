@@ -7,8 +7,8 @@ import { makeEnemy } from './src/entities/enemy.js'
 import { onRender } from './render.js'
 import { Vector2 } from './src/vector.js'
 
-// import eruda from 'eruda'
-// eruda.init()
+import eruda from 'eruda'
+eruda.init()
 
 // Setup main canvas
 const canvas = document.querySelector('canvas')
