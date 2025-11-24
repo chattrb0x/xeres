@@ -16,10 +16,8 @@ class Query {
       
       // Gather the actual component instances for this entity
       const components = archetype.entityComponents(entity, componentTypes)
-     
       results.push({ entity, components })
     }
-    // console.log('q:', results[0].components.size)
     return results
   }
   static find(level, componentTypes) {

@@ -1,7 +1,6 @@
 import { Health, Rotation, ScreenPosition, Velocity, Position, Mass, Force, MissileFired, Timer, Projectile, Collidable } from '../component.js'
 import { Query } from '../query.js'
 import { Vector2 } from '../vector.js'
-import { Entity } from './entity.js'
 
 
 const PROJECTILE_COLLIDER_SIZE = 25

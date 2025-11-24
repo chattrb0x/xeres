@@ -16,9 +16,9 @@ class Archetype {
   get signature() {
     return Archetype.makeSignature([...this.componentsByType.keys()])
   }
-  add(entity, components) {
+  add(entityId, components) {
     if (this.freeIndices.length == 0) {
-      this.entityIds.push(entity.id)
+      this.entityIds.push(entityId)
     
       // Track instances of components by constructor
       // No sorting required; Map already sorted at instantiation
@@ -30,15 +30,15 @@ class Archetype {
   
     // Otherwise attempt to recycle a previously used index.
     const index = this.freeIndices.pop()
-    this.entityIds[index] = entity.id
+    this.entityIds[index] = entityId
     components.forEach(instance => {
       this.componentsByType.get(instance.constructor)[index] = instance
     })
     return index
   }
   // Explicitly request components
-  entityComponents(entity, componentTypes) {
-    const index = this.entityIds.indexOf(entity.id)
+  entityComponents(entityId, componentTypes) {
+    const index = this.entityIds.indexOf(entityId)
     // !: returns ref to already allocated component instance 
     const componentsForEntity = new Map()
     componentTypes.forEach(type => {

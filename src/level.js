@@ -1,5 +1,4 @@
 import { Archetype } from './archetype.js'
-import { Entity } from './entities/entity.js'
 
 class Event {
   constructor(name, payload) {
@@ -75,12 +74,15 @@ class EventBus {
   } 
 }
 class Level {
-  constructor(size=16) {
-    this.nextEntityId = 1  // WARNING: Do not use this as an index
+  constructor(maxEntities=10000) {
     this.archetypes = new Map()
     this.entityRecords = new Map()
     this.eventBus = new EventBus()
-    this.freeIds = [] // Maintain a stack for recycling freed IDs when entities are destroyed.
+    // Maintain a stack for recycling freed IDs when entities are destroyed.
+    // Starts as all indices are free. 
+    this.freeIds = Array.from({ length: maxEntities }, (_, index) => index) 
+    // Keep track of what entities have been created.
+    this.entitiesBitField = new Uint8Array(new ArrayBuffer(maxEntities));
   }
   hasArchetype(components) {
     const sig = Archetype.makeSignature(components)
@@ -102,23 +104,27 @@ class Level {
     }
     
     // Associate entity with an archetype for easy look-up
-    const id = this.freeIds.length > 0
-      ? this.freeIds.pop()
-      : this.nextEntityId++
-    const entity = new Entity(id)
-    
-    const index = archetype.add(entity, components)
+    if (this.freeIds.length === 0) {
+      console.log("!!! MAX NUMBER OF ENTITIES REACHED !!!")
+    }
+    const id = this.freeIds.pop()
+    if (this.entitiesBitField[id] !== 0) {
+      console.log("!!! Entity already created at "+id+" ("+this.entitiesBitField[id]+") ... Uh oh this shouldn't happen !!!")
+    }
+    this.entitiesBitField[id] = 1
+    const index = archetype.add(id, components)
 
     // store archetypes associated with an entity
     // use index to get components for a specific entity eg. archetype.componentMap.get(Position)[1] for entity in archetype.entities[1]
-    this.entityRecords.set(entity, { archetype, index })
-    return entity
+    this.entityRecords.set(id, { archetype, index })
+    return id
   }
-  destroyEntity(entity){
-    const { archetype, index } = this.entityRecords.get(entity) 
-    this.entityRecords.delete(entity)
+  destroyEntity(entityId){
+    const { archetype, index } = this.entityRecords.get(entityId) 
+    this.entityRecords.delete(entityId)
+    this.entitiesBitField[entityId] = 0
     archetype.removeEntity(index)
-    this.freeIds.push(entity.id)
+    this.freeIds.push(entityId)
   }
   getComponent(entity, componentType) {
     const { archetype, index: entityIndex } = this.entityRecords.get(entity)
